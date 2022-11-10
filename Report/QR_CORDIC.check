@@ -1,0 +1,33 @@
+ 
+****************************************
+check_design summary:
+Version:     N-2017.09-SP2
+Date:        Thu Sep 22 11:36:13 2022
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Cells                                                              14
+    Cells do not drive (LINT-1)                                    14
+
+Nets                                                                2
+    Unloaded nets (LINT-2)                                          2
+--------------------------------------------------------------------------------
+
+Warning: In design 'QR_CORDIC', cell 'C15922' does not drive any nets. (LINT-1)
+Warning: In design 'QR_CORDIC', cell 'C15926' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_4' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_5' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_6' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_7' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_8' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_9' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_10' does not drive any nets. (LINT-1)
+Warning: In design 'VECTOR_MODE', cell 'B_11' does not drive any nets. (LINT-1)
+Warning: In design 'ROTATION_MODE', cell 'B_2' does not drive any nets. (LINT-1)
+Warning: In design 'ROTATION_MODE', cell 'B_3' does not drive any nets. (LINT-1)
+Warning: In design 'ROTATION_MODE', cell 'B_4' does not drive any nets. (LINT-1)
+Warning: In design 'ROTATION_MODE', cell 'B_5' does not drive any nets. (LINT-1)
+Warning: In design 'QR_CORDIC', net 'sign_gg4[0]' driven by pin 'inst_GG4/sign_d[0]' has no loads. (LINT-2)
+Warning: In design 'QR_CORDIC', net 'sign_gg4[1]' driven by pin 'inst_GG4/sign_d[1]' has no loads. (LINT-2)
+1
