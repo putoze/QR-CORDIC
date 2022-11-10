@@ -56,7 +56,7 @@ reg [ROW_INDEX-1:0] row_index_gg1_sub1_d2,row_index_gg2_sub1_d2;
 reg [ROW_INDEX-1:0] row_index_gg1_sub1_d3;
 
 //data
-reg signed [12:0] in_reg[0:7][0:3];
+reg signed [DATA_LENGTH-1:0] in_reg[0:7][0:NUM_COL-1]; //7=2^ROW_INDEX-1
 
 //controll
 reg [NUM_COL-1:0] enable_gg;
