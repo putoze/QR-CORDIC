@@ -30,25 +30,27 @@ module tb();
 parameter TBITS = 64;
 parameter TBYTE = 8;
 
-reg              S_AXIS_MM2S_TVALID = 0;
+localparam NUM_COL = 8;
+
+reg              S_AXIS_MM2S_TVALID;
 wire             S_AXIS_MM2S_TREADY;
-reg  [TBITS-1:0] S_AXIS_MM2S_TDATA = 0;
-reg  [TBYTE-1:0] S_AXIS_MM2S_TKEEP = 0;
-reg  [1-1:0]     S_AXIS_MM2S_TLAST = 0;
+reg  [TBITS-1:0] S_AXIS_MM2S_TDATA ;
+reg  [TBYTE-1:0] S_AXIS_MM2S_TKEEP ;
+reg  [1-1:0]     S_AXIS_MM2S_TLAST ;
 
 wire             M_AXIS_S2MM_TVALID;
-reg              M_AXIS_S2MM_TREADY = 0;
+reg              M_AXIS_S2MM_TREADY;
 wire [TBITS-1:0] M_AXIS_S2MM_TDATA;
 wire [TBYTE-1:0] M_AXIS_S2MM_TKEEP;
 wire [1-1:0]     M_AXIS_S2MM_TLAST;
 
 reg              aclk = 0;
-reg              aresetn = 1;
+reg              aresetn;
 
 //image
-reg [63:0]  ifmap   [0:7];
+reg [TBITS-1:0]  ifmap   [0:NUM_COL-1];
 //cexp
-reg [63:0]  ofmap   [0:7];
+reg [TBITS-1:0]  ofmap   [0:NUM_COL-1];
 
 
 //yolo_top----------------------------------------
@@ -86,16 +88,20 @@ initial begin // initial pattern and expected result
 end
 
 initial begin   
-    S_AXIS_MM2S_TKEEP = 'hff;
+    S_AXIS_MM2S_TKEEP  = 'hff;
+    S_AXIS_MM2S_TVALID = 0;
+    S_AXIS_MM2S_TDATA  = 0;
+    S_AXIS_MM2S_TKEEP  = 0;
+    S_AXIS_MM2S_TLAST  = 0;
+    M_AXIS_S2MM_TREADY = 0;
+    aresetn = 0;
+    #(`CYCLE*2);
+    aresetn = 1; //reset
+
     #(`CYCLE*2);
     aresetn = 0;
-    #(`CYCLE*3);
-    aresetn = 1;
-
-    #(`CYCLE*2);
-
-    for(i=0; i<2048; i=i+1)begin //image
-        @(posedge aclk);    
+    for(i=0; i<NUM_COL; i=i+1)begin //image
+        @(negedge aclk);    
         S_AXIS_MM2S_TVALID=1;
         S_AXIS_MM2S_TDATA=ifmap[i];
         
@@ -109,55 +115,35 @@ initial begin
     M_AXIS_S2MM_TREADY=1;
 
     wait ( M_AXIS_S2MM_TVALID ) ;
-    wait (!M_AXIS_S2MM_TVALID) ;
-    M_AXIS_S2MM_TREADY = 0;    
-    @(negedge M_AXIS_S2MM_TVALID);
+    M_AXIS_S2MM_TREADY = 1;
+    #(`CYCLE*2); 
+    for(i=0; i<NUM_COL; i=i+1)begin //image
+        @(negedge aclk);    
+        if(M_AXIS_S2MM_TDATA != ofmap[i]) begin
+            fail_task;
+        end
+    end
+    pass_task;
     #(`CYCLE*15);
     $finish;
 end
 
-integer f,l,m,n,o;
-/*
-initial
-begin
-  f = $fopen("D:/SOC_final/ip_ref/pattern/output_LL.txt","w");
-  l = $fopen("D:/SOC_final/ip_ref/pattern/output_LH.txt","w");
-  m = $fopen("D:/SOC_final/ip_ref/pattern/output_HL.txt","w");
-  n = $fopen("D:/SOC_final/ip_ref/pattern/output_HH.txt","w");
-end
-*/
-
-/*
-initial
+  task fail_task();
   begin
-    wait ( M_AXIS_S2MM_TVALID ) ;
-        f = $fopen("D:/SOC_final/ip_ref/pattern/output_LL.txt","w");
-        for(i=0;i<1024;i=i+1) begin
-            @(posedge aclk)
-            $fwrite(f,"%h\n",M_AXIS_S2MM_TDATA);
-        end
-        $fclose(f);
-        l = $fopen("D:/SOC_final/ip_ref/pattern/output_LH.txt","w");
-        for(i=1024;i<2048;i=i+1) begin
-            @(posedge aclk)
-            $fwrite(l,"%h\n",M_AXIS_S2MM_TDATA);
-        end
-        $fclose(l);
-        m = $fopen("D:/SOC_final/ip_ref/pattern/output_HL.txt","w");
-        for(i=2048;i<3072;i=i+1) begin
-            @(posedge aclk)
-            $fwrite(m,"%h\n",M_AXIS_S2MM_TDATA);
-        end
-        $fclose(m);
-        n = $fopen("D:/SOC_final/ip_ref/pattern/output_HH.txt","w");
-        for(i=3072;i<4096;i=i+1) begin
-            @(posedge aclk)
-            $fwrite(n,"%h\n",M_AXIS_S2MM_TDATA);
-        end
-        $fclose(n);
+    $display("-----------------------------------------------------\n");
+    $display("Error!!! There is something wrong with your code ...!\n");
+    $display("------The test result is .....FAIL ------------------\n");
+    $display("-----------------------------------------------------\n");
     $finish;
+  end 
+  endtask
+
+  task pass_task ();
+  begin
+    $display("\n---------------------Congratulations!------------------------");
+    $display("------------- The test result is ..... PASS -----------------\n");
   end
-*/
+  endtask
 
 always begin #(`CYCLE/2) aclk = ~aclk; end
 

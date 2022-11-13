@@ -39,8 +39,8 @@ module yolo_core #(
         input  wire             rst ,
         input  wire             clk
 );  
-//rst_n change into negedge reset
-wire rst_n = ~rst;
+//negedge reset
+wire rst_n = rst;
 //state
 reg [STATE_NUM-1:0] curr_state, next_state;
 //counter
@@ -48,10 +48,10 @@ reg [2:0] counter;
 //data_delay_buffer
 reg [DATA_LENGTH*4-1:0] data_temp;
 //in_valid delay buffer
-reg in_valid_d,in_valid_d2;
+reg isif_read_d;
 
 //==========  parameter ========== //
-parameter DATA_LENGTH = 13;
+localparam DATA_LENGTH = 13;
 //state
 localparam IDLE = 2'b00;
 localparam READ = 2'b01;
@@ -59,28 +59,30 @@ localparam CAL  = 2'b10;
 localparam WB   = 2'b11;
 //state num
 localparam STATE_NUM = 2;
+localparam NUM_COL = 8;
 
 //state wire
 wire READ_state = curr_state == READ;
+wire WB_state   = curr_state == WB;
 
 //flag
-wire read_done  = counter == 'd7 && curr_state == READ;
-wire wb_done    = counter == 'd7 && curr_state == WB  ;
-wire read_start = ;
-wire wb_start   = ;
+wire read_done  = counter == 'd0 && curr_state == READ;
+wire wb_done    = counter == 'd0 && curr_state == WB  ;
+wire read_start = isif_read_d;
+wire wb_start   = qr_out_valid;
 
 //==========  OUTPUT  ========== //
-assign isif_read     = curr_state == IDLE && isif_empty_n;
-assign osif_data_din;
-assign osif_strb_din;
-assign osif_last_din;
-assign osif_user_din;
-assign osif_write;
+assign isif_read     = isif_empty_n ? (read_done ? 0 : 1) : 0;
+assign osif_data_din = WB_state ? data_temp : 'd0;
+assign osif_strb_din = 'hff;
+assign osif_last_din = wb_done;
+assign osif_user_din = 0;
+assign osif_write    = WB_state;
 
 //==========  QR_CORDIC IO  ========== //
 wire [DATA_LENGTH*4-1:0] qr_data_out;
 wire qr_out_valid;
-wire qr_in_valid = in_valid_d2;
+wire qr_in_valid  = READ_state;
 
 //==========  FSM  ========== //
 always @(posedge clk or negedge rst_n) begin 
@@ -93,8 +95,8 @@ end
 
 always @(*) begin
         case (curr_state)
-                IDLE: next_state = isif_empty_n ? READ : IDLE;
-                READ: next_state = read_start   ? CAL  : READ;
+                IDLE: next_state = read_start   ? READ : IDLE;
+                READ: next_state = read_done    ? CAL  : READ;
                 CAL : next_state = wb_start     ? WB   : CAL ;
                 WB  : next_state = wb_done      ? IDLE : WB  ;
                 default : next_state = IDLE;
@@ -104,31 +106,45 @@ end
 //==========  DESIGN  ========== //
 always @(posedge clk or negedge rst_n) begin 
         if(rst_n) begin
-                counter <= 'd0;
+                counter <= NUM_COL;
         end
         else if(curr_state == READ) begin
-                counter <= counter + 'd1;
+                counter <= counter - 'd1;
         end
         else if(curr_state == WB) begin
-                counter <= counter + 'd1;
+                counter <= counter - 'd1;
         end
 end
 
 //data_temp
+always @(posedge clk or negedge rst_n) begin
+        if(~rst_n) begin
+            data_temp <= 'd0;
+        end 
+        else if(curr_state == WB) begin
+            data_temp <= qr_data_out;
+        end
+end
+
+//isif_read_d
+always @(posedge clk or negedge rst_n) begin 
+        if(~rst_n) begin
+             isif_read_d    <= 0;
+        end else begin
+             isif_read_d    <= isif_read;
+        end
+end
 
 //==========  Module  ========== //
         QR_CORDIC 
-        #(.DATA_LENGTH(DATA_LENGTH)
-        )
         inst_QR_CORDIC(
                 .clk        (clk),
                 .rst_n      (rst_n),
                 .valid      (READ_state),
                 .out_vallid (qr_out_valid),
-                .in         (data_temp),
+                .in         (isif_data_dout[DATA_LENGTH*4-1:0]),
                 .out        (qr_data_out)
         );
-
 
 endmodule  
 

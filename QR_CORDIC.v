@@ -2,6 +2,9 @@
 //`include "VECTOR_MODE.v"
 
 module QR_CORDIC
+  #(
+    DATA_LENGTH = 13
+    )
   (
     input                        clk,
     input                        rst_n,
@@ -24,14 +27,13 @@ localparam CAL  = 2'b01;
 localparam OUT  = 2'b10;
 
 //bit length parameter
-localparam DATA_LENGTH = 13;
-localparam K_LENGTH    = 11;
-localparam ROW_INDEX   = 3; //8 row
-localparam NUM_COL     = 4; //also number of GG, NUM_GR=3+2+1
-localparam NUM_ROW     = 8; //2^ROW_INDEX
-localparam ITER_IDX    = 3; //iterate 8 times
-localparam NUM_STATE   = 2; //number of state
-localparam NUM_SIGN    = 2; //folded cordic with 2 times
+localparam K_LENGTH  = 11;
+localparam ROW_INDEX = 3; //8 row
+localparam NUM_COL   = 4; //also number of GG, NUM_GR=3+2+1
+localparam NUM_ROW   = 8; //2^ROW_INDEX
+localparam ITER_IDX  = 3; //iterate 8 times
+localparam NUM_STATE = 2; //number of state
+localparam NUM_SIGN  = 2; //folded cordic with 2 times
 
 //========== reg ========== //
 reg [NUM_STATE-1:0] cur_state;
@@ -108,9 +110,9 @@ wire signed [DATA_LENGTH-1:0] out_gr1_X_w,out_gr2_X_w,out_gr3_X_w,out_gr4_X_w,ou
 wire signed [DATA_LENGTH-1:0] out_gr1_Y_w,out_gr2_Y_w,out_gr3_Y_w,out_gr4_Y_w,out_gr5_Y_w,out_gr6_Y_w;
 
 //flag
-wire cal_start = counter       == 'd0 && valid;
-wire cal_done  = row_index_gg4 == 'd4 && stall_gg[3];
-wire out_done  = counter       == 'd0 && cur_state[1];
+wire cal_start = valid          && counter       == 'd0;
+wire cal_done  = stall_gg[3]    && row_index_gg4 == 'd4;
+wire out_done  = counter == 'd0 && cur_state[1];
 
 //==========  operator  ========== //
 wire signed [DATA_LENGTH+K_LENGTH-1:0] out_m1_w = in_m1_w * K;
@@ -158,133 +160,100 @@ always @(posedge clk or negedge rst_n) begin
    end
 end 
 
-//in_reg
+//in_reg col 0 
 always @(posedge clk or negedge rst_n) begin 
-   if(~rst_n) begin
-      for(i=0;i<NUM_ROW;i=i+1) begin
-        in_reg[i][0] <= 'd0;
-        in_reg[i][1] <= 'd0;
-        in_reg[i][2] <= 'd0;
-        in_reg[i][3] <= 'd0;
-      end
-   end 
-   else if(valid) begin
-        in_reg[counter][0] <= $signed(in[12:0] );
-        in_reg[counter][1] <= $signed(in[25:13]);
-        in_reg[counter][2] <= $signed(in[38:26]);
-        in_reg[counter][3] <= $signed(in[51:39]);
-   end 
-   else begin
-        case(enable_gg)
-          4'b0001:
-          begin
-              in_reg[row_index_gg1     ][0]  <= stall_gg[0] ? {out_m1_w[23],out_m1_w[23:10]} : out_gg1_X_w;
-              in_reg[row_index_gg1_sub1][0]  <= stall_gg[0] ? {out_m2_w[23],out_m2_w[23:10]} : out_gg1_Y_w;
-          end
-          4'b0011:
-          begin
-              in_reg[row_index_gg1     ][0]  <= stall_gg[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg1_X_w;
-              in_reg[row_index_gg1_sub1][0]  <= stall_gg[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg1_Y_w;
-              in_reg[row_index_gg2     ][1]  <= stall_gg[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg2_X_w;
-              in_reg[row_index_gg2_sub1][1]  <= stall_gg[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg2_Y_w;
-          end
-          4'b0111:
-          begin
-              in_reg[row_index_gg1     ][0]  <= stall_gg[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg1_X_w;
-              in_reg[row_index_gg1_sub1][0]  <= stall_gg[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg1_Y_w;
-              in_reg[row_index_gg2     ][1]  <= stall_gg[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg2_X_w;
-              in_reg[row_index_gg2_sub1][1]  <= stall_gg[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg2_Y_w;
-              in_reg[row_index_gg3     ][2]  <= stall_gg[2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg3_X_w;
-              in_reg[row_index_gg3_sub1][2]  <= stall_gg[2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg3_Y_w;
-          end
-          4'b1000:
-          begin
-              in_reg[row_index_gg4     ][3]  <= stall_gg[3] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg4_X_w;
-              in_reg[row_index_gg4_sub1][3]  <= stall_gg[3] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg4_Y_w;
-          end
-          4'b1100:
-          begin
-              in_reg[row_index_gg3     ][2]  <= stall_gg[2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg3_X_w;
-              in_reg[row_index_gg3_sub1][2]  <= stall_gg[2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg3_Y_w;
-              in_reg[row_index_gg4     ][3]  <= stall_gg[3] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg4_X_w;
-              in_reg[row_index_gg4_sub1][3]  <= stall_gg[3] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg4_Y_w;
-          end
-          4'b1110:
-          begin
-              in_reg[row_index_gg2     ][1]  <= stall_gg[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg2_X_w;
-              in_reg[row_index_gg2_sub1][1]  <= stall_gg[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg2_Y_w;
-              in_reg[row_index_gg3     ][2]  <= stall_gg[2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg3_X_w;
-              in_reg[row_index_gg3_sub1][2]  <= stall_gg[2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg3_Y_w;
-              in_reg[row_index_gg4     ][3]  <= stall_gg[3] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg4_X_w;
-              in_reg[row_index_gg4_sub1][3]  <= stall_gg[3] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg4_Y_w;
-          end
-          default: in_reg[0][0] <= in_reg[0][0];
-        endcase
-        case(enable_d)
-          3'b001:
-          begin
-            in_reg[row_index_gg1_d     ][1]  <= stall_d [0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr1_X_w;
-            in_reg[row_index_gg1_sub1_d][1]  <= stall_d [0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr1_Y_w;
-          end
-          3'b011:
-          begin
-            in_reg[row_index_gg1_d     ][1]  <= stall_d [0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr1_X_w;
-            in_reg[row_index_gg1_sub1_d][1]  <= stall_d [0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr1_Y_w;
-            in_reg[row_index_gg2_d     ][2]  <= stall_d [1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr4_X_w;
-            in_reg[row_index_gg2_sub1_d][2]  <= stall_d [1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr4_Y_w;
-          end
-          3'b100:
-          begin
-            in_reg[row_index_gg3_d     ][3]  <= stall_d [2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr6_X_w;
-            in_reg[row_index_gg3_sub1_d][3]  <= stall_d [2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr6_Y_w;
-          end
-          3'b110:
-          begin
-            in_reg[row_index_gg2_d     ][2]  <= stall_d [1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr4_X_w;
-            in_reg[row_index_gg2_sub1_d][2]  <= stall_d [1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr4_Y_w;
-            in_reg[row_index_gg3_d     ][3]  <= stall_d [2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr6_X_w;
-            in_reg[row_index_gg3_sub1_d][3]  <= stall_d [2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr6_Y_w;
-          end
-          3'b111:
-          begin
-            in_reg[row_index_gg1_d     ][1]  <= stall_d [0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr1_X_w;
-            in_reg[row_index_gg1_sub1_d][1]  <= stall_d [0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr1_Y_w;
-            in_reg[row_index_gg2_d     ][2]  <= stall_d [1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr4_X_w;
-            in_reg[row_index_gg2_sub1_d][2]  <= stall_d [1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr4_Y_w;
-            in_reg[row_index_gg3_d     ][3]  <= stall_d [2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr6_X_w;
-            in_reg[row_index_gg3_sub1_d][3]  <= stall_d [2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr6_Y_w;
-          end
-          default: in_reg[0][0] <= in_reg[0][0];
-        endcase
-        case(enable_d2)
-          2'b01:
-          begin
-            in_reg[row_index_gg1_d2     ][2]  <= stall_d2[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr2_X_w;
-            in_reg[row_index_gg1_sub1_d2][2]  <= stall_d2[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr2_Y_w;
-          end
-          2'b10:
-          begin
-            in_reg[row_index_gg2_d2     ][3]  <= stall_d2[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr5_X_w;
-            in_reg[row_index_gg2_sub1_d2][3]  <= stall_d2[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr5_Y_w;
-          end
-          2'b11:
-          begin
-            in_reg[row_index_gg1_d2     ][2]  <= stall_d2[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr2_X_w;
-            in_reg[row_index_gg1_sub1_d2][2]  <= stall_d2[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr2_Y_w;
-            in_reg[row_index_gg2_d2     ][3]  <= stall_d2[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr5_X_w;
-            in_reg[row_index_gg2_sub1_d2][3]  <= stall_d2[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr5_Y_w;
-            end
-          default: in_reg[0][0] <= in_reg[0][0];
-        endcase
-        case(enable_d3)
-          1:
-          begin
-            in_reg[row_index_gg1_d3     ][3]  <= stall_d3[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr3_X_w;
-            in_reg[row_index_gg1_sub1_d3][3]  <= stall_d3[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr3_Y_w;
-          end
-          default: in_reg[0][0] <= in_reg[0][0];
-        endcase
-   end
+  if(!rst_n) begin
+    for(i=0;i<NUM_ROW;i=i+1) begin
+      in_reg[i][0] <= 'd0;
+    end
+  end 
+  else if(valid) begin
+    in_reg[counter][0] <= $signed(in[12:0] );
+  end
+  else begin 
+    if(enable_gg[0]) begin
+      in_reg[row_index_gg1       ][0] <= (stall_gg[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg1_X_w); //gg1
+      in_reg[row_index_gg1_sub1  ][0] <= (stall_gg[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg1_Y_w); //gg1
+    end
+  end
+end
+
+//in_reg col 1
+always @(posedge clk or negedge rst_n) begin 
+  if(!rst_n) begin
+    for(i=0;i<NUM_ROW;i=i+1) begin
+      in_reg[i][1] <= 'd0;
+    end
+  end 
+  else if(valid) begin
+    in_reg[counter][1] <= $signed(in[25:13] );
+  end
+  else begin
+    if(enable_gg[1]) begin
+      in_reg[row_index_gg2       ][1]  <=  (stall_gg[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg2_X_w); //gg2
+      in_reg[row_index_gg2_sub1  ][1]  <=  (stall_gg[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg2_Y_w); //gg2
+    end
+    if(enable_d [0]) begin
+      in_reg[row_index_gg1_d     ][1]  <=  (stall_d [0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr1_X_w); //gr1
+      in_reg[row_index_gg1_sub1_d][1]  <=  (stall_d [0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr1_Y_w); //gr1
+    end
+  end
+end
+
+//in_reg col 2
+always @(posedge clk or negedge rst_n) begin 
+  if(!rst_n) begin
+    for(i=0;i<NUM_ROW;i=i+1) begin
+      in_reg[i][2] <= 'd0;
+    end
+  end 
+  else if(valid) begin
+    in_reg[counter][2] <= $signed(in[38:26] );
+  end
+  else begin
+    if(enable_gg[2]) begin
+      in_reg[row_index_gg3        ][2]  <= (stall_gg[2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg3_X_w); //gg3
+      in_reg[row_index_gg3_sub1   ][2]  <= (stall_gg[2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg3_Y_w); //gg3 
+    end
+    if(enable_d [1]) begin
+      in_reg[row_index_gg2_d      ][2]  <= (stall_d [1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr4_X_w); //gr4
+      in_reg[row_index_gg2_sub1_d ][2]  <= (stall_d [1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr4_Y_w); //gr4
+    end
+    if(enable_d2[0]) begin
+      in_reg[row_index_gg1_d2     ][2]  <= (stall_d2[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gr2_X_w); //gr2
+      in_reg[row_index_gg1_sub1_d2][2]  <= (stall_d2[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gr2_Y_w); //gr2
+    end
+  end
+end
+
+//in_reg col 3
+always @(posedge clk or negedge rst_n) begin 
+  if(!rst_n) begin
+    for(i=0;i<NUM_ROW;i=i+1) begin
+      in_reg[i][3] <= 'd0;
+    end
+  end 
+  else if(valid) begin
+    in_reg[counter][3] <= $signed(in[51:39] );
+  end
+  else begin
+    if(enable_gg[3]) begin
+      in_reg[row_index_gg4        ][3]  <= (stall_gg[3] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg4_X_w); //gg4
+      in_reg[row_index_gg4_sub1   ][3]  <= (stall_gg[3] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg4_Y_w); //gg4
+    end
+    if(enable_d [2]) begin
+      in_reg[row_index_gg3_d      ][3]  <= (stall_d [2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr6_X_w); //gr6
+      in_reg[row_index_gg3_sub1_d ][3]  <= (stall_d [2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr6_Y_w); //gr6
+    end
+    if(enable_d2[1]) begin
+      in_reg[row_index_gg2_d2     ][3]  <= (stall_d2[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gr5_X_w); //gr5
+      in_reg[row_index_gg2_sub1_d2][3]  <= (stall_d2[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gr5_Y_w); //gr5
+    end
+    if(enable_d3   ) begin
+      in_reg[row_index_gg1_d3     ][3]  <= (stall_d3    ? {out_m1_w[23],out_m1_w[21:10]} : out_gr3_X_w); //gr3
+      in_reg[row_index_gg1_sub1_d3][3]  <= (stall_d3    ? {out_m2_w[23],out_m2_w[21:10]} : out_gr3_Y_w); //gr3
+    end
+  end
 end
 
 //stall_gg
@@ -336,12 +305,12 @@ always @(posedge clk or negedge rst_n) begin
      enable_gg[0] <= 1;
    end
    else if(cur_state[0]) begin
-     if     (row_index_gg1 == 'd5 && iter_num_r_gg1 == 'd0) enable_gg[1] <= 1;
-     else if(row_index_gg2 == 'd5 && iter_num_r_gg2 == 'd4) enable_gg[2] <= 1;
-     else if(row_index_gg1 == 'd1 && stall_gg[0]          ) enable_gg    <= 4'b1110;
-     else if(row_index_gg2 == 'd2 && stall_gg[1]          ) enable_gg[1] <= 0;
-     else if(row_index_gg3 == 'd3 && stall_gg[2]          ) enable_gg[2] <= 0;
-     else if(row_index_gg4 == 'd4 && stall_gg[3]          ) enable_gg[3] <= 0;
+     if     (row_index_gg1 == 'd5 && iter_num_r_gg1 == 'd0 && !stall_gg[0]) enable_gg[1] <= 1;
+     else if(row_index_gg2 == 'd5 && iter_num_r_gg2 == 'd4                ) enable_gg[2] <= 1;
+     else if(row_index_gg1 == 'd1 && stall_gg[0]) enable_gg    <= 4'b1110;
+     else if(row_index_gg2 == 'd2 && stall_gg[1]) enable_gg[1] <= 0;
+     else if(row_index_gg3 == 'd3 && stall_gg[2]) enable_gg[2] <= 0;
+     else if(row_index_gg4 == 'd4 && stall_gg[3]) enable_gg[3] <= 0;
    end
 end 
 

@@ -91,7 +91,7 @@ yolo_core_U (
         .osif_write ( osif_write ) ,
 
         //
-        .rst ( ap_rst ) ,
+        .rst ( ap_rst ) , //negedge reset
         .clk ( aclk )
 );  // yolo_core_U
 

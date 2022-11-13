@@ -35,7 +35,7 @@ module tb;
 
   reg  [LENGTH-1:0]   exp  [0:N_PAT-1];
   reg  [LENGTH-1:0]   ori  [0:N_PAT-1];
-  reg  [18:0]         del  ;
+  //reg  [18:0]         del  ;
   reg                 valid;
   wire                out_vallid;
   reg  [51:0]         in;
