@@ -9,7 +9,7 @@ clc;
 row = 8; % row number of A matrix
 col = 4; % column number of A matrix
 % Call self-defined function 
-%A = random_matrix(row, col);
+A = random_matrix(row, col);
 % Check if A has full column rank 4
 %while 1
    % if rank(A) == min(row,col)
@@ -18,7 +18,7 @@ col = 4; % column number of A matrix
      %   A = random_matrix(row, col);
    % end
 %end
-disp(A*1024);
+
 %A2 = A * 1024;
 
 %%% Floating point QR factorization using Given's rotation
@@ -149,24 +149,37 @@ R_hat_cordic;
 delta_p2 = quantization_error(R, R_hat_cordic);
 
 A1 = fi(A, 1, 13,10);
-fid = fopen('D:/QR_CORDIC/TESBED/matrix_ori.txt','w');
+fid = fopen('D:/QR_CORDIC/RTL/TESBED/matrix_ori.dat','w');
 for i = 1:8
+    fprintf(fid,'%s','000000000000');
     for j = 1:4
         cval = A1((9-i),j);
-        fprintf(fid,'%s\n',cval.bin); % write bin value to the file.
-    end    
+        disp(cval.bin);
+        fprintf(fid,'%s',cval.bin); % write bin value to the file.
+    end
+    fprintf(fid,'%s',' // ');
+    fprintf(fid,'%s',(8 - i));
+    fprintf(fid,'%s',' row');
+    fprintf(fid,'%s\n','');
 end
 fclose(fid);
 
-fid1 = fopen('D:/QR_CORDIC/TESBED/matrix_exp.txt','w');
+fid1 = fopen('D:/QR_CORDIC/RTL/TESBED/matrix_exp.dat','w');
 for i = 1:8
+    fprintf(fid1,'%s','000000000000');
     for j = 1:4
         cval = R_hat_cordic((9-i),j);
-        fprintf(fid1,'%s\n',cval.bin); % write bin value to the file.
-    end    
+        disp(cval.bin);
+        fprintf(fid1,'%s',cval.bin); % write bin value to the file.
+    end
+    fprintf(fid1,'%s',' // ');
+    fprintf(fid1,'%s',(8 - i));
+    fprintf(fid1,'%s',' row');
+    fprintf(fid1,'%s\n','');
 end
 fclose(fid1);
 
+display(delta_p2);
 
 %delta_p3 = quantization_error(R, B1);
 %display(delta_p3);

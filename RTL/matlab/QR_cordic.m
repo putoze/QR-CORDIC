@@ -1,4 +1,4 @@
-clc;
+clc; clear;
 % Initialize fail_cnt, calculate how many patterns we test do not meet
 % the specification δ < 0.01
 %fail_cnt = 0;
@@ -9,17 +9,15 @@ clc;
 row = 8; % row number of A matrix
 col = 4; % column number of A matrix
 % Call self-defined function 
-%A = random_matrix(row, col);
+A = random_matrix(row, col);
 % Check if A has full column rank 4
-%while 1
-   % if rank(A) == min(row,col)
-      %  break
-    %else
-     %   A = random_matrix(row, col);
-   % end
-%end
-disp(A*1024);
-%A2 = A * 1024;
+while 1
+    if rank(A) == min(row,col)
+        break
+    else
+        A = random_matrix(row, col);
+    end
+end
 
 %%% Floating point QR factorization using Given's rotation
 % Initialize Q and R matrices
@@ -82,8 +80,6 @@ Q_hat = Q_hat_inv';
 % Rmatrix
 R_hat;
 
-
-
 % Calculate the quantization error value by self-defined function
 delta_p1 = quantization_error(R, R_hat);
 %disp(['Test matrix ',num2str(test),': Phase 1 quantization error = ', num2str(delta_p1)])
@@ -109,27 +105,26 @@ Z_len  = Z_sign + Z_dec + Z_frac;
 % Initialize R matrices
 %R_hat_cordic = A;
 R_hat_cordic = fi(A, 1, R_len, R_frac);
-display(R_hat_cordic.dec);
 % Eliminate A(q+1,p) by A(q,p)
 for p_hat = 1:col % eliminate from left to right
     for q_hat = (row-1):(-1):p_hat % eliminate from bottom to top
         % computing vectoring mode once: nullification and find rotation angle for rotation mode
         % set x > 0 by adding minus sign to all the elements of the two row
         % due to the angle constraint on right half plane in CORDIC
-        %if R_hat_cordic(q_hat,p_hat) < 0
-           % for rev = p_hat:col
-               % R_hat_cordic(q_hat  ,rev) = -R_hat_cordic(q_hat  ,rev);
-               % R_hat_cordic(q_hat+1,rev) = -R_hat_cordic(q_hat+1,rev);
-          %  end
-      %  end
+        if R_hat_cordic(q_hat,p_hat) < 0
+            for rev = p_hat:col
+                R_hat_cordic(q_hat  ,rev) = -R_hat_cordic(q_hat  ,rev);
+                R_hat_cordic(q_hat+1,rev) = -R_hat_cordic(q_hat+1,rev);
+            end
+        end
         x_v = R_hat_cordic(q_hat  ,p_hat); % initial input x of vectoring mode
         y_v = R_hat_cordic(q_hat+1,p_hat); % initial input y of vectoring mode
         z_v = 0;                           % initial input z of vectoring mode
         % call self-defined function vectoring_mode
         [X_v, Y_v, Z_v, K_v] = vectoring_mode(x_v, y_v, z_v, iter_num, R_len, R_frac, K_len, K_frac, Z_len, Z_frac);
-
         R_hat_cordic(q_hat  ,p_hat) = X_v; % renew x element after rotation
         R_hat_cordic(q_hat+1,p_hat) = Y_v; % renew y element after rotation
+        
         
         % computing rotation mode (col-p_hat) times: rotate the same angle as vectoring mode
         for rot = 1: (col-p_hat)
@@ -146,31 +141,25 @@ end
 % R matrix
 R_hat_cordic;
 
-delta_p2 = quantization_error(R, R_hat_cordic);
-
-A1 = fi(A, 1, 13,10);
-fid = fopen('D:/QR_CORDIC/TESBED/matrix_ori.txt','w');
-for i = 1:8
-    for j = 1:4
-        cval = A1((9-i),j);
-        fprintf(fid,'%s\n',cval.bin); % write bin value to the file.
-    end    
-end
-fclose(fid);
-
-fid1 = fopen('D:/QR_CORDIC/TESBED/matrix_exp.txt','w');
-for i = 1:8
-    for j = 1:4
-        cval = R_hat_cordic((9-i),j);
-        fprintf(fid1,'%s\n',cval.bin); % write bin value to the file.
-    end    
-end
-fclose(fid1);
-
-
-%delta_p3 = quantization_error(R, B1);
-%display(delta_p3);
 %%% Determine the final quantization error value delta
 
+% Calculate the quantization error value by self-defined function
+delta_p2 = quantization_error(R, R_hat_cordic);
+%disp(['Test matrix ',num2str(test),': Phase 2 quantization error = ', num2str(delta_p2)])
+%if delta_p2 > 0.01
+%    fail_cnt = fail_cnt + 1;
+%    continue
+%end
+output = [K_len,iter_num,delta_p2];
 
+display(A);
+display(Q);
+display(R_hat_cordic);
+formatSpec = 'Q x (Q)^-1:\n' ;
+fprintf(formatSpec);
+fprintf('word length, iteration number, delta');
+disp(output);
 
+%end
+
+%disp(['Failed: ', num2str(fail_cnt),' patterns'])

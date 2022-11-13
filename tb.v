@@ -1,17 +1,17 @@
 `timescale 1ns/10ps
-`define CYCLE      10.0          	  // Modify your clock period here
-`define SDFFILE    "Netlist/QR_CORDIC_SYN.sdf"	  // Modify your sdf file name
+`define CYCLE      10.0             // Modify your clock period here
+`define SDFFILE    "Netlist/QR_CORDIC_SYN.sdf"    // Modify your sdf file name
 `define End_CYCLE  10000000             // Modify cycle times once your design need more cycle times!
 
 `define ORI        "D:/QR_CORDIC/TESBED/matrix_ori.txt"
 `define EXP        "D:/QR_CORDIC/TESBED/matrix_exp.txt"
 
 `ifdef RTL
-	`include "QR_CORDIC.v"
+  `include "QR_CORDIC.v"
 `endif
 
 `ifdef GATE
-	`include "./Netlist/QR_CORDIC_SYN.v"
+  `include "./Netlist/QR_CORDIC_SYN.v"
 `endif
 
   /*
@@ -40,13 +40,13 @@ module tb;
   reg  [51:0]         in;
   wire [51:0]         out;
 
-  integer		i,f,s;
+  integer   i,f,s;
 
-  reg	 pass_chk,start;
+  reg  pass_chk,start;
   reg  [8:0] count;
 
-  reg		clk = 0;
-  reg		rst_n;
+  reg   clk = 0;
+  reg   rst_n;
 
 initial begin
   `ifdef GATE

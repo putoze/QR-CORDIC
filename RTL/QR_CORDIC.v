@@ -27,13 +27,12 @@ localparam CAL  = 2'b01;
 localparam OUT  = 2'b10;
 
 //bit length parameter
-localparam K_LENGTH  = 11;
-localparam ROW_INDEX = 3; //8 row
-localparam NUM_COL   = 4; //also number of GG, NUM_GR=3+2+1
-localparam NUM_ROW   = 8; //2^ROW_INDEX
-localparam ITER_IDX  = 3; //iterate 8 times
-localparam NUM_STATE = 2; //number of state
-localparam NUM_SIGN  = 2; //folded cordic with 2 times
+parameter K_LENGTH  = 11;
+parameter ROW_INDEX = 3; //8 row
+parameter NUM_COL   = 4; //also number of GG, NUM_GR=3+2+1
+parameter ITER_IDX  = 3; //iterate 8 times
+parameter NUM_STATE = 2; //number of state
+parameter NUM_SIGN  = 2; //folded cordic with 2 times
 
 //========== reg ========== //
 reg [NUM_STATE-1:0] cur_state;
@@ -57,18 +56,18 @@ reg [ROW_INDEX-1:0] row_index_gg1_sub1_d2,row_index_gg2_sub1_d2;
 reg [ROW_INDEX-1:0] row_index_gg1_sub1_d3;
 
 //data
-reg signed [DATA_LENGTH-1:0] in_reg[0:NUM_ROW-1][0:NUM_COL-1]; //data storage
+reg signed [DATA_LENGTH-1:0] in_reg[0:7][0:NUM_COL-1]; //7=2^ROW_INDEX-1
 
 //controll
-reg [NUM_COL-1:0] enable_gg;//0:enable_gg1/1:enable_gg2/2:enable_gg3/3:enable_gg4
-reg [NUM_COL-2:0] enable_d; //0:enable_gr1/1:enable_gr2/2:enable_gr3
-reg [NUM_COL-3:0] enable_d2;//0:enable_gr4/1:enable_gr5
-reg [NUM_COL-4:0] enable_d3;//enable_gr6
+reg [NUM_COL-1:0] enable_gg;
+reg [NUM_COL-2:0] enable_d; 
+reg [NUM_COL-3:0] enable_d2;
+reg [NUM_COL-4:0] enable_d3;
 
-reg [NUM_COL-1:0] stall_gg;//0:stall gg1/1:stall gg2/2:stall gg3/3:stall gg4
-reg [NUM_COL-2:0] stall_d; //0:stall gr1/1:stall gr2/2:stall gr3
-reg [NUM_COL-3:0] stall_d2;//0:stall gr4/1:stall gr5
-reg [NUM_COL-4:0] stall_d3;//stall gr6
+reg [NUM_COL-1:0] stall_gg; //0:stall gg1/1:stall gg2/2:stall gg3/3:stall gg4
+reg [NUM_COL-2:0] stall_d; 
+reg [NUM_COL-3:0] stall_d2;
+reg [NUM_COL-4:0] stall_d3;
 
 //========== IO ========== //
 reg signed [DATA_LENGTH-1:0] in_m1_w;
@@ -110,9 +109,9 @@ wire signed [DATA_LENGTH-1:0] out_gr1_X_w,out_gr2_X_w,out_gr3_X_w,out_gr4_X_w,ou
 wire signed [DATA_LENGTH-1:0] out_gr1_Y_w,out_gr2_Y_w,out_gr3_Y_w,out_gr4_Y_w,out_gr5_Y_w,out_gr6_Y_w;
 
 //flag
-wire cal_start = counter       == 'd0 && valid;
-wire cal_done  = row_index_gg4 == 'd4 && stall_gg[3];
-wire out_done  = counter       == 'd0 && cur_state[1];
+wire cal_start = valid          && counter       == 'd0;
+wire cal_done  = stall_gg[3]    && row_index_gg4 == 'd4;
+wire out_done  = counter == 'd0 && cur_state[1];
 
 //==========  operator  ========== //
 wire signed [DATA_LENGTH+K_LENGTH-1:0] out_m1_w = in_m1_w * K;
@@ -136,7 +135,7 @@ assign out        = cur_state[1] ? {in_reg[counter][3],in_reg[counter][2],in_reg
 
 //==========  FSM  ========== //
 always @(posedge clk or negedge rst_n) begin 
-  if(!rst_n) begin
+  if(~rst_n) begin
     cur_state <= IDLE;
   end 
   else begin
@@ -149,8 +148,8 @@ end
 //==========  DESIGN  ========== //
 //counter
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
-     counter <= NUM_ROW - 1;
+   if(~rst_n) begin
+     counter <= 'd7;
    end 
    else if(valid) begin
      counter <= counter - 'd1;
@@ -163,7 +162,7 @@ end
 //in_reg
 always @(posedge clk or negedge rst_n) begin 
    if(~rst_n) begin
-      for(i=0;i<NUM_ROW;i=i+1) begin
+      for(i=0;i<8;i=i+1) begin
         in_reg[i][0] <= 'd0;
         in_reg[i][1] <= 'd0;
         in_reg[i][2] <= 'd0;
@@ -220,6 +219,19 @@ always @(posedge clk or negedge rst_n) begin
               in_reg[row_index_gg4     ][3]  <= stall_gg[3] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg4_X_w;
               in_reg[row_index_gg4_sub1][3]  <= stall_gg[3] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg4_Y_w;
           end
+          /*
+          4'b1111:
+          begin
+              in_reg[row_index_gg1     ][0]  <= stall_gg[0] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg1_X_w;
+              in_reg[row_index_gg1_sub1][0]  <= stall_gg[0] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg1_Y_w;
+              in_reg[row_index_gg2     ][1]  <= stall_gg[1] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg2_X_w;
+              in_reg[row_index_gg2_sub1][1]  <= stall_gg[1] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg2_Y_w;
+              in_reg[row_index_gg3     ][2]  <= stall_gg[2] ? {out_m3_w[23],out_m3_w[21:10]} : out_gg3_X_w;
+              in_reg[row_index_gg3_sub1][2]  <= stall_gg[2] ? {out_m4_w[23],out_m4_w[21:10]} : out_gg3_Y_w;
+              in_reg[row_index_gg4     ][3]  <= stall_gg[3] ? {out_m1_w[23],out_m1_w[21:10]} : out_gg4_X_w;
+              in_reg[row_index_gg4_sub1][3]  <= stall_gg[3] ? {out_m2_w[23],out_m2_w[21:10]} : out_gg4_Y_w;
+          end
+          */
           default: in_reg[0][0] <= in_reg[0][0];
         endcase
         case(enable_d)
@@ -287,21 +299,21 @@ always @(posedge clk or negedge rst_n) begin
           default: in_reg[0][0] <= in_reg[0][0];
         endcase
    end
-end
+end  
 
 //stall_gg
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n)                     stall_gg    <=  4'b0000;
+   if(~rst_n)                     stall_gg    <=  4'd0;
    else if(iter_num_r_gg1 == 'd6) stall_gg    <=  4'b0001;
    else if(iter_num_r_gg2 == 'd6) stall_gg    <=  4'b0010;
    else if(iter_num_r_gg3 == 'd6) stall_gg    <=  4'b0100;
    else if(iter_num_r_gg4 == 'd6) stall_gg    <=  4'b1000;
-   else                           stall_gg    <=  4'b0000;
+   else                           stall_gg    <=  4'd0;
 end 
 
 //stall_d
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      stall_d <= 'd0;
    end 
    else begin
@@ -311,7 +323,7 @@ end
 
 //stall_d2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      stall_d2 <= 'd0;
    end 
    else begin
@@ -321,7 +333,7 @@ end
 
 //stall_d3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      stall_d3 <= 'd0;
    end 
    else begin
@@ -331,25 +343,26 @@ end
 
 //enable_gg
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      enable_gg <= 'd0;
    end 
    else if(cal_start) begin
      enable_gg[0] <= 1;
    end
    else if(cur_state[0]) begin
-     if     (row_index_gg1 == 'd5 && iter_num_r_gg1 == 'd0) enable_gg[1] <= 1;
-     else if(row_index_gg2 == 'd5 && iter_num_r_gg2 == 'd4) enable_gg[2] <= 1;
-     else if(row_index_gg1 == 'd1 && stall_gg[0]          ) enable_gg    <= 4'b1110;
-     else if(row_index_gg2 == 'd2 && stall_gg[1]          ) enable_gg[1] <= 0;
-     else if(row_index_gg3 == 'd3 && stall_gg[2]          ) enable_gg[2] <= 0;
-     else if(row_index_gg4 == 'd4 && stall_gg[3]          ) enable_gg[3] <= 0;
+     if     (row_index_gg1 == 'd5 && iter_num_r_gg1 == 'd0 && !stall_gg[0]) enable_gg[1] <= 1;
+     else if(row_index_gg2 == 'd5 && iter_num_r_gg2 == 'd4                ) enable_gg[2] <= 1;
+   //else if(row_index_gg3 == 'd5 && iter_num_r_gg3 == 'd0 && !stall_gg[2]) enable_gg[3] <= 1;
+     else if(row_index_gg1 == 'd1 && stall_gg[0]) enable_gg    <= 4'b1110;
+     else if(row_index_gg2 == 'd2 && stall_gg[1]) enable_gg[1] <= 0;
+     else if(row_index_gg3 == 'd3 && stall_gg[2]) enable_gg[2] <= 0;
+     else if(row_index_gg4 == 'd4 && stall_gg[3]) enable_gg[3] <= 0;
    end
 end 
 
 //enable_d
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      enable_d <= 'd0;
    end 
    else begin
@@ -359,7 +372,7 @@ end
 
 //enable_d2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      enable_d2 <= 'd0;
    end 
    else begin
@@ -369,7 +382,7 @@ end
 
 //enable_d3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      enable_d3 <= 'd0;
    end 
    else begin
@@ -379,7 +392,7 @@ end
 
 //sign_gg_d
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {sign_gg1_d,sign_gg2_d,sign_gg3_d} <= 'd0;
    end 
    else begin
@@ -389,7 +402,7 @@ end
 
 //sign_gg_d2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {sign_gg1_d2,sign_gg2_d2} <= 'd0;
    end 
    else begin
@@ -399,7 +412,7 @@ end
 
 //sign_gg_d3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      sign_gg1_d3 <= 'd0;
    end 
    else begin
@@ -409,7 +422,7 @@ end
 
 //iter_num_r_gg1
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      iter_num_r_gg1 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -419,7 +432,7 @@ end
 
 //iter_num_r_gg2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      iter_num_r_gg2 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -429,7 +442,7 @@ end
 
 //iter_num_r_gg3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      iter_num_r_gg3 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -439,7 +452,7 @@ end
 
 //iter_num_r_gg4
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      iter_num_r_gg4 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -449,7 +462,7 @@ end
 
 //iter_num_r_gg_d
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {iter_num_r_gg1_d,iter_num_r_gg2_d,iter_num_r_gg3_d} <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -459,7 +472,7 @@ end
 
 //iter_num_r_gg_d2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {iter_num_r_gg1_d2,iter_num_r_gg2_d2} <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -469,7 +482,7 @@ end
 
 //iter_num_r_gg_d3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      iter_num_r_gg1_d3 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -479,7 +492,7 @@ end
 
 //row_index_gg1
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      row_index_gg1 <= 'd7;
    end 
    else if(stall_gg[0] & enable_gg[0]) begin
@@ -489,7 +502,7 @@ end
 
 //row_index_gg2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      row_index_gg2 <= 'd7;
    end 
    else if(stall_gg[1] & enable_gg[1]) begin
@@ -499,7 +512,7 @@ end
 
 //row_index_gg3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      row_index_gg3 <= 'd7;
    end 
    else if(stall_gg[2] & enable_gg[2]) begin
@@ -509,7 +522,7 @@ end
 
 //row_index_gg4
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      row_index_gg4 <= 'd7;
    end 
    else if(stall_gg[3] & enable_gg[3]) begin
@@ -519,7 +532,7 @@ end
 
 //row_index_gg_d
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {row_index_gg1_d,row_index_gg2_d,row_index_gg3_d} <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -529,7 +542,7 @@ end
 
 //row_index_gg_d2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {row_index_gg1_d2,row_index_gg2_d2} <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -539,7 +552,7 @@ end
 
 //row_index_gg_d3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      row_index_gg1_d3 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -549,7 +562,7 @@ end
 
 //row_index_gg_sub1_d
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {row_index_gg1_sub1_d,row_index_gg2_sub1_d,row_index_gg3_sub1_d} <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -559,7 +572,7 @@ end
 
 //row_index_gg_sub1_d2
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      {row_index_gg1_sub1_d2,row_index_gg2_sub1_d2} <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -569,7 +582,7 @@ end
 
 //row_index_gg_sub1_d3
 always @(posedge clk or negedge rst_n) begin 
-   if(!rst_n) begin
+   if(~rst_n) begin
      row_index_gg1_sub1_d3 <= 'd0;
    end 
    else if(cur_state[0]) begin
@@ -821,4 +834,3 @@ end
 
 
 endmodule
-
