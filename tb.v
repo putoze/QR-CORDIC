@@ -5,6 +5,7 @@
 
 `define ORI        "D:/QR_CORDIC/TESBED/matrix_ori.txt"
 `define EXP        "D:/QR_CORDIC/TESBED/matrix_exp.txt"
+//`define DEL        "D:/QR_CORDIC/TESBED/delta.txt"
 
 `ifdef RTL
   `include "QR_CORDIC.v"
@@ -34,7 +35,7 @@ module tb;
 
   reg  [LENGTH-1:0]   exp  [0:N_PAT-1];
   reg  [LENGTH-1:0]   ori  [0:N_PAT-1];
-
+  reg  [18:0]         del  ;
   reg                 valid;
   wire                out_vallid;
   reg  [51:0]         in;
@@ -55,9 +56,6 @@ initial begin
 end
 
   QR_CORDIC
-  #(
-    .DATA_LENGTH(LENGTH)
-    ) 
   inst_QR_CORDIC (
       .clk        (clk),
       .rst_n      (rst_n),
@@ -74,7 +72,8 @@ end
 
   initial
   begin  // data input
-    //s=$fscanf (`ORI,"%f",number);
+    //f = $fopen(`DEL,"r");
+    //$fscanf(f,"%b",del);
     $readmemb (`EXP, exp);
     $readmemb (`ORI, ori);
     $display("-----------------------------------------------------\n");
