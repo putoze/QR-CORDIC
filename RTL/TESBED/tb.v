@@ -82,27 +82,26 @@ integer i,j;
 initial begin // initial pattern and expected result
     wait(aresetn==1);
     begin
-        $readmemh(`ifmap, ifmap);
-        $readmemh(`ofmap, ofmap);
+        $readmemb(`ifmap, ifmap);
+        $readmemb(`ofmap, ofmap);
     end 
 end
 
 initial begin   
-    S_AXIS_MM2S_TKEEP  = 'hff;
+    S_AXIS_MM2S_TKEEP  = {TBYTE{1'b1}};
     S_AXIS_MM2S_TVALID = 0;
     S_AXIS_MM2S_TDATA  = 0;
     S_AXIS_MM2S_TKEEP  = 0;
     S_AXIS_MM2S_TLAST  = 0;
     M_AXIS_S2MM_TREADY = 0;
-    aresetn = 0;
+    aresetn = 0;//reset
     #(`CYCLE*2);
-    aresetn = 1; //reset
-
+    aresetn = 1; 
+    //READ image input
     #(`CYCLE*2);
-    aresetn = 0;
-    for(i=0; i<NUM_COL; i=i+1)begin //image
+    S_AXIS_MM2S_TVALID=1;
+    for(i=0; i<=NUM_COL; i=i+1)begin 
         @(negedge aclk);    
-        S_AXIS_MM2S_TVALID=1;
         S_AXIS_MM2S_TDATA=ifmap[i];
         
         #0.1;
@@ -112,17 +111,16 @@ initial begin
     S_AXIS_MM2S_TVALID = 0;
     S_AXIS_MM2S_TDATA  = 'd0;
     S_AXIS_MM2S_TLAST  = 0;
-    M_AXIS_S2MM_TREADY=1;
-
-    wait ( M_AXIS_S2MM_TVALID ) ;
     M_AXIS_S2MM_TREADY = 1;
-    #(`CYCLE*2); 
-    for(i=0; i<NUM_COL; i=i+1)begin //image
+    wait ( M_AXIS_S2MM_TVALID ) ;
+    for(i=0; i<=NUM_COL; i=i+1)begin //image
         @(negedge aclk);    
         if(M_AXIS_S2MM_TDATA != ofmap[i]) begin
+            M_AXIS_S2MM_TREADY = 0;
             fail_task;
         end
     end
+    M_AXIS_S2MM_TREADY = 0;
     pass_task;
     #(`CYCLE*15);
     $finish;

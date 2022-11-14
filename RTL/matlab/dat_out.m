@@ -9,7 +9,7 @@ clc;
 row = 8; % row number of A matrix
 col = 4; % column number of A matrix
 % Call self-defined function 
-A = random_matrix(row, col);
+% A = random_matrix(row, col);
 % Check if A has full column rank 4
 %while 1
    % if rank(A) == min(row,col)
@@ -153,8 +153,7 @@ fid = fopen('D:/QR_CORDIC/RTL/TESBED/matrix_ori.dat','w');
 for i = 1:8
     fprintf(fid,'%s','000000000000');
     for j = 1:4
-        cval = A1((9-i),j);
-        disp(cval.bin);
+        cval = A1((9-i),(5-j));
         fprintf(fid,'%s',cval.bin); % write bin value to the file.
     end
     fprintf(fid,'%s',' // ');
@@ -168,8 +167,7 @@ fid1 = fopen('D:/QR_CORDIC/RTL/TESBED/matrix_exp.dat','w');
 for i = 1:8
     fprintf(fid1,'%s','000000000000');
     for j = 1:4
-        cval = R_hat_cordic((9-i),j);
-        disp(cval.bin);
+        cval = R_hat_cordic((9-i),(5-j));
         fprintf(fid1,'%s',cval.bin); % write bin value to the file.
     end
     fprintf(fid1,'%s',' // ');
@@ -178,6 +176,26 @@ for i = 1:8
     fprintf(fid1,'%s\n','');
 end
 fclose(fid1);
+
+fid2 = fopen('D:/QR_CORDIC/RTL/TEST/matrix_ori.txt','w');
+for i = 1:8
+    for j = 1:4
+        cval = A1((9-i),j);
+        fprintf(fid2,'%s',cval.bin); % write bin value to the file.
+        fprintf(fid1,'%s\n','');
+    end    
+end
+fclose(fid2);
+
+fid3 = fopen('D:/QR_CORDIC/RTL/TEST/matrix_exp.txt','w');
+for i = 1:8
+    for j = 1:4
+        cval = R_hat_cordic((9-i),j);
+        fprintf(fid3,'%s',cval.bin); % write bin value to the file.
+        fprintf(fid1,'%s\n','');
+    end    
+end
+fclose(fid3);
 
 display(delta_p2);
 

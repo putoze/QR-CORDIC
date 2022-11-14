@@ -25,19 +25,19 @@ module yolo_top
         output wire [TBYTE-1:0] M_AXIS_S2MM_TKEEP,
         output wire [1-1:0]     M_AXIS_S2MM_TLAST,  // EOL      
         
-        output wire [TBITS-1:0] isif_data_dout,
-        output wire [TBYTE-1:0] isif_strb_dout,
-        output wire [1 - 1:0]   isif_last_dout,
-        output wire [1 - 1:0]   isif_user_dout,
-        output wire             isif_empty_n,
-        output wire             isif_read,        
+        //output wire [TBITS-1:0] isif_data_dout,
+        //output wire [TBYTE-1:0] isif_strb_dout,
+        //output wire [1 - 1:0]   isif_last_dout,
+        //output wire [1 - 1:0]   isif_user_dout,
+        //output wire             isif_empty_n,
+        //output wire             isif_read,        
         
-        output wire [TBITS-1:0] osif_data_din,
-        output wire [TBYTE-1:0] osif_strb_din,
-        output wire [1 - 1:0]   osif_last_din,
-        output wire [1 - 1:0]   osif_user_din,
-        output wire             osif_full_n,
-        output wire             osif_write,                
+        //output wire [TBITS-1:0] osif_data_din,
+        //output wire [TBYTE-1:0] osif_strb_din,
+        //output wire [1 - 1:0]   osif_last_din,
+        //output wire [1 - 1:0]   osif_user_din,
+        //output wire             osif_full_n,
+        //output wire             osif_write,                
         
         input  wire             S_AXIS_MM2S_ACLK,
         input  wire             M_AXIS_S2MM_ACLK,
@@ -47,19 +47,19 @@ module yolo_top
 
 parameter RESET_ACTIVE_LOW = 1;
 
-//wire [TBITS - 1:0] isif_data_dout;
-//wire [TBYTE - 1:0] isif_strb_dout;
-//wire [1 - 1:0]     isif_last_dout;
-//wire [1 - 1:0]     isif_user_dout;
-//wire               isif_empty_n;
-//wire               isif_read;
+wire [TBITS - 1:0] isif_data_dout;
+wire [TBYTE - 1:0] isif_strb_dout;
+wire [1 - 1:0]     isif_last_dout;
+wire [1 - 1:0]     isif_user_dout;
+wire               isif_empty_n;
+wire               isif_read;
 
-//wire [TBITS - 1:0] osif_data_din;
-//wire [TBYTE - 1:0] osif_strb_din;
-//wire               osif_full_n;
-//wire               osif_write;
-//wire [1 - 1:0]     osif_last_din;
-//wire [1 - 1:0]     osif_user_din;
+wire [TBITS - 1:0] osif_data_din;
+wire [TBYTE - 1:0] osif_strb_din;
+wire               osif_full_n;
+wire               osif_write;
+wire [1 - 1:0]     osif_last_din;
+wire [1 - 1:0]     osif_user_din;
 
 wire ap_rst;
 
@@ -91,7 +91,7 @@ yolo_core_U (
         .osif_write ( osif_write ) ,
 
         //
-        .rst ( ap_rst ) , //negedge reset
+        .rst ( ap_rst ) , //posedge reset
         .clk ( aclk )
 );  // yolo_core_U
 
