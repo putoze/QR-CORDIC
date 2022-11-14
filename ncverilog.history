@@ -1,6 +1,0 @@
-s1(22Sep2022:11:18:31):  ncverilog tb.v -define GATE -debug -v tsmc13_neg.v +access+rw 
-s2(22Sep2022:11:25:23):  ncverilog tb.v -define GATE -debug -v tsmc13_neg.v +access+rw 
-s3(22Sep2022:11:26:26):  ncverilog tb.v -define GATE -debug -v tsmc13_neg.v +access+rw 
-s4(22Sep2022:11:31:51):  ncverilog tb.v -define GATE -debug -v tsmc13_neg.v +access+rw 
-s5(22Sep2022:11:34:16):  ncverilog tb.v -define GATE -debug -v tsmc13_neg.v +access+rw 
-s6(22Sep2022:11:37:55):  ncverilog tb.v -define GATE -debug -v tsmc13_neg.v +access+rw 

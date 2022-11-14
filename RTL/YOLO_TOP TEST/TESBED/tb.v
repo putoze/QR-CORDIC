@@ -22,9 +22,9 @@
 `define CYCLE   50.0
 
 //picture
-`define ifmap   "D:/QR_CORDIC/RTL/TESBED/matrix_ori.dat"
+`define ifmap   "D:/QR_CORDIC/RTL/YOLO_TOP TEST/TESBED/matrix_ori.dat"
 //exp
-`define ofmap   "D:/QR_CORDIC/RTL/TESBED/matrix_exp.dat"
+`define ofmap   "D:/QR_CORDIC/RTL/YOLO_TOP TEST/TESBED/matrix_exp.dat"
 
 module tb();
 parameter TBITS = 64;
