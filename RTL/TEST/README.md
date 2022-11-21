@@ -16,6 +16,9 @@ $[X_{81} X_{82} X_{83} X_{84}]$
 the first input data will be
 in = $[X_{81} X_{82} X_{83} X_{84}]$
 
+next clk data in will be 
+in = $[X_{71} X_{72} X_{73} X_{74}]$
+
 3.output value only can pass while out_valid is high, and TESBED will check your out data in successive 8 clk, simularly from column 8, for example
 TESBED will check your first out data equal to $[X_{81} X_{82} X_{83} X_{84}]$ or not, if fail, it will show fail task.
 
