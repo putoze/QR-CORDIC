@@ -4,7 +4,7 @@
 
 2.input value will pass one column of data in a clk and the first data is column 8, for example 
 8*4 matrix is 
-[X11 X12 X13 X14
+$[X_{11} X12 X13 X14$
 <br />
 .
 .
