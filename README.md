@@ -2,9 +2,9 @@
 ## Design in RTL file
 1. [Yolo Top works on FPGA](##Yolo-Top)
 
-2. Test work on cellbase
+2. [Test work on cellbase](##Test)
 
-3. matlab for TESBED and caculate delta
+3. [Simulation outcome](##OUTCOME)
 
 ## Yolo Top
 
@@ -28,11 +28,35 @@
 
 - QR_CORDIC輸入輸出介面
 
-Signal Name	I/O	Width	Simple Description
-Clk	I	1	Clock Signal(posedge trigger)
-Rst_n	I	1	Negedge reset
-valid	I	1	valid為high，in資料開始輸入
-out_valid	0	1	out_valid為high，out資料開始輸出
-in	I	52	為第i列資料，4筆13bits資料組成輸入
-out	0	52	為第i列資料，4筆13bits資料組成輸出
+![image](https://user-images.githubusercontent.com/97605863/202998493-d49406dd-ebb4-478b-bdf6-68d5cbc55f0e.png)
+
+- GG輸入輸出介面
+
+![image](https://user-images.githubusercontent.com/97605863/202998558-9fd3c953-89b2-47f3-a619-225506bb0475.png)
+
+- GR輸入輸出介面
+
+![image](https://user-images.githubusercontent.com/97605863/202998649-0052eb1f-a649-4654-bbd5-95946cf3bd71.png)
+
+## OUTCOME
+
+- TESBED Simulation outcome
+
+![TB_1](https://user-images.githubusercontent.com/97605863/202999296-115a79e7-dfbe-4f2e-9d79-21bca3ce2f8f.png)
+
+![TB_2](https://user-images.githubusercontent.com/97605863/202999330-3444e699-a78d-4273-9a20-3687abd16421.png)
+
+![TB_3](https://user-images.githubusercontent.com/97605863/202999364-83e92cd0-2f26-4de8-88d2-70e27c39ff0e.png)
+
+- Timing Report
+
+![timing_1](https://user-images.githubusercontent.com/97605863/202999517-63f1e51a-c865-4728-9c8e-c2ab6d4a2777.png)
+
+![timing_2](https://user-images.githubusercontent.com/97605863/202999543-3af719b7-35f5-44eb-805b-75ccbaa7aa19.png)
+
+- Area
+
+![area](https://user-images.githubusercontent.com/97605863/202999610-06c480d1-27ba-4b91-b5e2-dd8fd6f65399.png)
+
+
 
