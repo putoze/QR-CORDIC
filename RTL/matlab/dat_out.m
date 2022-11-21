@@ -9,7 +9,15 @@ clc;
 row = 8; % row number of A matrix
 col = 4; % column number of A matrix
 % Call self-defined function 
-% A = random_matrix(row, col);
+%A = random_matrix(row, col);
+A=[-0.4453   -0.7188   -0.4297   -0.9297
+    0.3594   -0.5156    0.5625    0.5234
+    0.3516   -0.6328   -0.2813    0.3281
+    0.9063    0.5469    0.9297   -0.8359
+   -0.6875    0.3047   -0.9609   -0.5391
+   -0.6641    0.4297   -0.6172   -0.4297
+   -0.3594   -0.3359    0.6172   -0.5547
+    0.8906    0.3828    0.5000    0.3203];
 % Check if A has full column rank 4
 %while 1
    % if rank(A) == min(row,col)
@@ -109,7 +117,7 @@ Z_len  = Z_sign + Z_dec + Z_frac;
 % Initialize R matrices
 %R_hat_cordic = A;
 R_hat_cordic = fi(A, 1, R_len, R_frac);
-display(R_hat_cordic.dec);
+
 % Eliminate A(q+1,p) by A(q,p)
 for p_hat = 1:col % eliminate from left to right
     for q_hat = (row-1):(-1):p_hat % eliminate from bottom to top
@@ -149,7 +157,7 @@ R_hat_cordic;
 delta_p2 = quantization_error(R, R_hat_cordic);
 
 A1 = fi(A, 1, 13,10);
-fid = fopen('D:/QR_CORDIC/RTL/TESBED/matrix_ori.dat','w');
+fid = fopen('D:/QR_CORDIC/RTL/YOLO_TOP TEST/TESBED/matrix_ori.dat','w');
 for i = 1:8
     fprintf(fid,'%s','000000000000');
     for j = 1:4
@@ -163,7 +171,7 @@ for i = 1:8
 end
 fclose(fid);
 
-fid1 = fopen('D:/QR_CORDIC/RTL/TESBED/matrix_exp.dat','w');
+fid1 = fopen('D:/QR_CORDIC/RTL/YOLO_TOP TEST/TESBED/matrix_exp.dat','w');
 for i = 1:8
     fprintf(fid1,'%s','000000000000');
     for j = 1:4
@@ -177,7 +185,7 @@ for i = 1:8
 end
 fclose(fid1);
 
-fid2 = fopen('D:/QR_CORDIC/RTL/TEST/matrix_ori.txt','w');
+fid2 = fopen('D:/QR_CORDIC/RTL/TEST/TESBED/matrix_ori.txt','w');
 for i = 1:8
     for j = 1:4
         cval = A1((9-i),j);
@@ -187,7 +195,7 @@ for i = 1:8
 end
 fclose(fid2);
 
-fid3 = fopen('D:/QR_CORDIC/RTL/TEST/matrix_exp.txt','w');
+fid3 = fopen('D:/QR_CORDIC/RTL/TEST/TESBED/matrix_exp.txt','w');
 for i = 1:8
     for j = 1:4
         cval = R_hat_cordic((9-i),j);
@@ -197,6 +205,10 @@ for i = 1:8
 end
 fclose(fid3);
 
+display(A1);
+display(A1.sdec);
+display(R_hat_cordic);
+display(R_hat_cordic.sdec);
 display(delta_p2);
 
 %delta_p3 = quantization_error(R, B1);

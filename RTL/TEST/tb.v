@@ -3,8 +3,8 @@
 `define SDFFILE    "Netlist/QR_CORDIC_SYN.sdf"    // Modify your sdf file name
 `define End_CYCLE  10000000             // Modify cycle times once your design need more cycle times!
 
-`define ORI        "D:/QR_CORDIC/RTL/TEST/matrix_ori.txt"
-`define EXP        "D:/QR_CORDIC/RTL/TEST/matrix_exp.txt"
+`define ORI        "D:/QR_CORDIC/RTL/TEST/TESBED/matrix_ori.txt"
+`define EXP        "D:/QR_CORDIC/RTL/TEST/TESBED/matrix_exp.txt"
 //`define DEL        "D:/QR_CORDIC/TESBED/delta.txt"
 
 `ifdef RTL
@@ -128,9 +128,10 @@ end
         for(i=8;i>0;i=i-1) begin
           $display("%13f %13f %13f %13f",$signed(exp[4*i-4]),$signed(exp[4*i-3]),$signed(exp[4*i-2]),$signed(exp[4*i-1]));
         end
-        $display("\n The delta result is %.4f, calculation time is %2d clk\n",0.0059,count);
+        $display("\n The delta result is %.4f, calculation time is %2d clk\n",0.0039,count);
         $display("-----------------------------------------------------\n");
         //$fclose(f);
+        #150
         $finish;
     end
     //fail

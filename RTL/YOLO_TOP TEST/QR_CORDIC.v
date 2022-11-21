@@ -2,16 +2,13 @@
 //`include "VECTOR_MODE.v"
 
 module QR_CORDIC
-  #(
-    DATA_LENGTH = 13
-    )
   (
     input                        clk,
     input                        rst,
     input                        valid,
     output                       out_vallid,
-    input    [DATA_LENGTH*4-1:0] in,
-    output   [DATA_LENGTH*4-1:0] out
+    input                 [51:0] in,
+    output                [51:0] out
   );
 
 //integer
@@ -27,6 +24,7 @@ localparam CAL  = 2'b01;
 localparam OUT  = 2'b10;
 
 //bit length parameter
+localparam DATA_LENGTH = 13;
 localparam K_LENGTH  = 11;
 localparam ROW_INDEX = 3; //8 row
 localparam NUM_COL   = 4; //also number of GG, NUM_GR=3+2+1

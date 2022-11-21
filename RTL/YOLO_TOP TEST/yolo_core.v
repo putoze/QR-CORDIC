@@ -39,12 +39,6 @@ module yolo_core #(
         input  wire             rst ,
         input  wire             clk
 );  
-//state
-reg [STATE_NUM-1:0] curr_state, next_state;
-//counter
-reg [2:0] counter;
-//data_delay_buffer
-reg [DATA_LENGTH*4-1:0] data_temp;
 
 //==========  parameter ========== //
 localparam DATA_LENGTH = 13;
@@ -57,6 +51,13 @@ localparam WB   = 2'b11;
 localparam STATE_NUM = 2;
 localparam NUM_COL = 8;
 localparam EXTEND = TBITS-DATA_LENGTH;
+
+//state
+reg [STATE_NUM-1:0] curr_state, next_state;
+//counter
+reg [2:0] counter;
+//data_delay_buffer
+reg [DATA_LENGTH*4-1:0] data_temp;
 
 //state wire
 wire READ_state = curr_state == READ;
