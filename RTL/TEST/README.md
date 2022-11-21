@@ -12,10 +12,8 @@ $[X_{11} X_{12} X_{13} X_{14}]$
 .
 $[X_{81} X_{82} X_{83} X_{84}]$
 ]
-
 the first input data will be
 in = $[X_{81} X_{82} X_{83} X_{84}]$
-
 next clk data in will be 
 in = $[X_{71} X_{72} X_{73} X_{74}]$
 and so on
