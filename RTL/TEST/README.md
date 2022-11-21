@@ -1,4 +1,4 @@
-# How to use my TESBED
+# How to use my TESTBED
 
 1.input value will enter while valid is high
 
