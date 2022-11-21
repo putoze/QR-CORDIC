@@ -2,6 +2,5 @@
 
 1.input value will enter while valid is high
 
-2.input value will pass one column of data in a clk
-
+2.input value will pass one column of data in a clk-
 and the first data is column 8
