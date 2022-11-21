@@ -9,13 +9,13 @@
 
 - 系統架構圖
 
-![image](https://user-images.githubusercontent.com/97605863/202997122-d862c743-5413-4490-8203-e70f6ae453db.png)
+![image](https://user-images.githubusercontent.com/97605863/203002404-6f9a46bf-ec7d-46d7-9278-560228de8797.png)
 
 - Top module輸入輸出介面
 
 - Block Design
 
-![image](https://user-images.githubusercontent.com/97605863/203002150-b55accb5-d71c-47d1-86b4-35f74dddbc82.png)
+![block diagram](https://user-images.githubusercontent.com/97605863/203002318-5a55a1a1-4547-4a3c-8c74-57fa3d79c694.png)
 
 - SDK Result
 
