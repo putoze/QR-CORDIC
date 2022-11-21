@@ -9,6 +9,12 @@
 ## Yolo Top
 
 - 系統架構圖
+
 ![image](https://user-images.githubusercontent.com/97605863/202997122-d862c743-5413-4490-8203-e70f6ae453db.png)
 
+- Top module輸入輸出介面
+
+- Block Design
+
+![image](https://user-images.githubusercontent.com/97605863/202997413-c79d6884-a70c-44cc-bdd6-51935aeef6c4.png)
 
