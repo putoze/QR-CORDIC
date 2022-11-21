@@ -15,7 +15,7 @@
 
 - Block Design
 
-![image](https://user-images.githubusercontent.com/97605863/202997602-5382c8e9-5f31-44d7-be32-c88013301338.png)
+![image](https://user-images.githubusercontent.com/97605863/203002150-b55accb5-d71c-47d1-86b4-35f74dddbc82.png)
 
 - SDK Result
 
@@ -45,7 +45,7 @@
 
 ![TB_2](https://user-images.githubusercontent.com/97605863/202999330-3444e699-a78d-4273-9a20-3687abd16421.png)
 
-![TB_3](https://user-images.githubusercontent.com/97605863/202999364-83e92cd0-2f26-4de8-88d2-70e27c39ff0e.png)
+![TB_3](https://user-images.githubusercontent.com/97605863/203001987-94437228-0246-4b28-928e-02c5bea20b6b.png)
 
 - Timing Report
 
