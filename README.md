@@ -1,12 +1,11 @@
-# CORDIC
-## Design in RTL file
-1. [Yolo Top works on FPGA](##Yolo-Top)
+# Design in RTL file
+1. [Yolo Top works on FPGA](#Yolo-Top)
 
-2. [Test work on cellbase](##Test)
+2. [Test work on cellbase](#Test)
 
-3. [Simulation outcome](##OUTCOME)
+3. [Simulation outcome](#OUTCOME)
 
-## Yolo Top
+# Yolo Top
 
 - 系統架構圖
 
@@ -20,7 +19,7 @@
 
 - SDK Result
 
-## Test
+# Test
 
 - 系統架構圖
 
@@ -38,7 +37,7 @@
 
 ![image](https://user-images.githubusercontent.com/97605863/202998649-0052eb1f-a649-4654-bbd5-95946cf3bd71.png)
 
-## OUTCOME
+# OUTCOME
 
 - TESBED Simulation outcome
 
