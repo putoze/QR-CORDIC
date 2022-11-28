@@ -1,4 +1,6 @@
-# How to use my TESTBED
+# Note
+
+## How to use my TESTBED
 
 1.input value will enter while valid is high
 
@@ -19,3 +21,8 @@ and so on
 
 3.output value only can pass while out_valid is high, and TESTBED will check your out data in successive 8 clk, simularly start from column 8, for example, whlle out_valid is hign, the first cycle will check your first out data equal to $[X_{81} X_{82} X_{83} X_{84}]$ or not, if fail, it will show fail task. After 8 clk, your out_valid should pull down.
 
+## Some way you can improve my code
+
+1. Use stack and pipelne reg instead of array reg(in my code called in_reg)
+2. We only need to care about GG output data, other data can keep in stack first. Because GG will use GR output again.
+3. Output data can keep into SRAM rather than register.
