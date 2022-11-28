@@ -1,7 +1,7 @@
 # Note
 
-1.How to use my TESTBED[# How to use my TESTBED]
-2.Some way you can improve my code[# Some way you can improve my code]
+1.[How to use my TESTBED ](# How to use my TESTBED)
+2.[Some way you can improve my code] (# Some way you can improve my code)
 
 ## How to use my TESTBED
 
