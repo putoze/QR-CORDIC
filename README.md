@@ -24,11 +24,11 @@ CORDIC請參考 https://blog.csdn.net/Pieces_thinking/article/details/83512820
 
 - Top module輸入輸出介面
 
+![image](https://user-images.githubusercontent.com/97605863/204197439-de762d97-d763-4b96-8151-09da8701a1cc.png)
+
 - Block Design
 
 ![block diagram](https://user-images.githubusercontent.com/97605863/203002318-5a55a1a1-4547-4a3c-8c74-57fa3d79c694.png)
-
-- SDK Result
 
 ## Test
 
