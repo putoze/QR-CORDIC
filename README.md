@@ -20,7 +20,7 @@ CORDIC請參考 https://blog.csdn.net/Pieces_thinking/article/details/83512820
 
 - 系統架構圖
 
-![image](https://user-images.githubusercontent.com/97605863/204197851-df8e5c70-d26c-4c71-ae06-dfe3f6842374.png)
+![image](https://user-images.githubusercontent.com/97605863/204197945-08a39357-e5f9-49de-8b08-c70370a832ae.png)
 
 - Top module輸入輸出介面
 
