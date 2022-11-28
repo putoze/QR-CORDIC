@@ -27,6 +27,6 @@ and so on
 
 ## Some way you can improve my code
 
-1.Use stack and pipelne reg instead of array reg(in my code called in_reg)
-2.We only need to care about GG output data, other data can keep in stack first. Because GG will use GR output again.
-3.Output data can keep into SRAM rather than register.
+1.Use stack and pipelne reg instead of array reg(in my code called in_reg)<br />
+2.We only need to care about GG output data, other data can keep in stack first. Because GG will use GR output again.<br />
+3.Output data can keep into SRAM rather than register.<br />
