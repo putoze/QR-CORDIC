@@ -1,4 +1,4 @@
-# Design in RTL file
+# **QR_CORDIC**
 1. [Introduction](#Introduction)
 
 2. [Yolo Top works on FPGA](#Yolo-Top)
@@ -7,16 +7,16 @@
 
 4. [Simulation outcome](#OUTCOME)
 
-# Introduction
+## Introduction
 QR 分解是數值線性代數中具備多種用途的計算工具，主要應用於線性方程、最小平方法和特徵值問題。常見的 QR 分解的計算方法包括 Householder 變換、Givens rotation以及 Gram-Schmidt 正交法。本文使用given rotation搭配CORDIC Alogorithms。
 <br/>
 <br/>
-此文實作採用 8*4 矩陣，每個數字大小定義在 ±0.25~±1 ，預期得到一組 8*4 的上三角矩陣R。實驗流程為先使用MATLAB估算預期使用定點數(fixed point)的長度(浮點數與定點數的誤差需足夠小)以及iteration的次數，再將MATLAB生成的隨機 8*4 矩陣以定點數格式匯入verilog，並將verilog算出答案與matlab算出答案做比較，最後使用FPGA做驗證。
+此文實作採用 8×4 矩陣，每個數字大小定義在 ±0.25~±1 ，預期得到一組 8×4 的上三角矩陣R。實驗流程為先使用MATLAB估算預期使用定點數(fixed point)的長度(浮點數與定點數的誤差需足夠小)以及iteration的次數，再將MATLAB生成的隨機 8×4 矩陣以定點數格式匯入verilog，並將verilog算出答案與matlab算出答案做比較，最後使用FPGA做驗證。
 <br/>
 <br/>
 CORDIC請參考 https://blog.csdn.net/Pieces_thinking/article/details/83512820
 
-# Yolo Top
+## Yolo Top
 
 - 系統架構圖
 
@@ -30,7 +30,7 @@ CORDIC請參考 https://blog.csdn.net/Pieces_thinking/article/details/83512820
 
 - SDK Result
 
-# Test
+## Test
 
 - 系統架構圖
 
@@ -48,7 +48,7 @@ CORDIC請參考 https://blog.csdn.net/Pieces_thinking/article/details/83512820
 
 ![image](https://user-images.githubusercontent.com/97605863/202998649-0052eb1f-a649-4654-bbd5-95946cf3bd71.png)
 
-# OUTCOME
+## OUTCOME
 
 - TESBED Simulation outcome
 
