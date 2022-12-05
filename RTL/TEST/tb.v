@@ -29,17 +29,18 @@
 
 module tb;
 
-  parameter LENGTH = 13;
-  parameter BUS = 4;
+  parameter DATA_LENGTH = 13;
+  parameter NUM_SIGN    = 2;
+  parameter ITER_IDX    = 3;
   parameter N_PAT = 32;
 
-  reg  [LENGTH-1:0]   exp  [0:N_PAT-1];
-  reg  [LENGTH-1:0]   ori  [0:N_PAT-1];
+  reg  [DATA_LENGTH-1:0]   exp  [0:N_PAT-1];
+  reg  [DATA_LENGTH-1:0]   ori  [0:N_PAT-1];
   //reg  [18:0]         del  ;
   reg                 valid;
   wire                out_vallid;
-  reg  [51:0]         in;
-  wire [51:0]         out;
+  reg  [4*DATA_LENGTH-1:0]         in;
+  wire [4*DATA_LENGTH-1:0]         out;
 
   integer   i,f,s;
 
@@ -55,6 +56,23 @@ initial begin
   `endif
 end
 
+`ifdef RTL
+  QR_CORDIC#(
+  .DATA_LENGTH(DATA_LENGTH) 
+  .NUM_SIGN(NUM_SIGN) //folded cordic with 2 times
+  .ITER_IDX(ITER_IDX) //iterate 8 times
+  )
+  inst_QR_CORDIC (
+      .clk        (clk),
+      .rst_n      (rst_n),
+      .valid      (valid),
+      .out_vallid (out_vallid),
+      .in         (in),
+      .out        (out)
+  );
+`endif
+
+`ifdef GATE
   QR_CORDIC
   inst_QR_CORDIC (
       .clk        (clk),
@@ -63,7 +81,8 @@ end
       .out_vallid (out_vallid),
       .in         (in),
       .out        (out)
-    );
+  );
+`endif
 
   always
   begin

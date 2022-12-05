@@ -1,0 +1,49 @@
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : QR_CORDIC
+Version: N-2017.09-SP2
+Date   : Tue Nov 29 11:36:44 2022
+****************************************
+
+
+Library(s) Used:
+
+    slow (File: /usr/cad/Design_Kit/CBDK_IC_Contest_v2.5/SynopsysDC/db/slow.db)
+
+
+Operating Conditions: slow   Library: slow
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.08 
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1pW
+
+
+  Cell Internal Power  =   1.5125 mW   (92%)
+  Net Switching Power  = 130.5112 uW    (8%)
+                         ---------
+Total Dynamic Power    =   1.6430 mW  (100%)
+
+Cell Leakage Power     =  68.4201 uW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register           1.3738        2.3115e-02        1.5550e+07            1.4124  (  82.53%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational      0.1387            0.1074        5.2870e+07            0.2990  (  17.47%)
+--------------------------------------------------------------------------------------------------
+Total              1.5125 mW         0.1305 mW     6.8420e+07 pW         1.7114 mW
+1

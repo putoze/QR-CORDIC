@@ -1,7 +1,11 @@
 //`include "ROTATION_MODE.v"
 //`include "VECTOR_MODE.v"
 
-module QR_CORDIC
+module QR_CORDIC #(
+parameter  DATA_LENGTH = 13;
+parameter  NUM_SIGN  = 2; //folded cordic with 2 times
+parameter  ITER_IDX  = 3; //iterate 8 times
+  )
   (
     input                        clk,
     input                        rst_n,
@@ -24,15 +28,11 @@ localparam CAL  = 2'b01;
 localparam OUT  = 2'b10;
 
 //bit length parameter
-parameter  DATA_LENGTH = 13;
-parameter  NUM_SIGN  = 2; //folded cordic with 2 times
-parameter  ITER_IDX  = 3; //iterate 8 times
 localparam K_LENGTH  = 11;
 localparam ROW_INDEX = 3; //8 row
 localparam NUM_COL   = 4; //also number of GG, NUM_GR=3+2+1
 localparam NUM_ROW   = 8; //2^ROW_INDEX
 localparam NUM_STATE = 2; //number of state
-
 
 //========== reg ========== //
 reg [NUM_STATE-1:0] cur_state;
