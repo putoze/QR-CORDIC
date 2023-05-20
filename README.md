@@ -79,7 +79,9 @@ output_matrix = 13 bits(1 sign bit, 2 decimal bits, 10 fraction bits)
   <img src="img/qr_dg.png" width="600" />
 </p>
 
-選擇 $\vec{d} = \begin{bmatrix} 1 \\ 0 \\ 0\end{bmatrix} $ , 結果如圖
+<p align="left">
+  <img src="img/project_vec.png" width="150" />
+</p>
 
 <p align="left">
   <img src="img/qr_systolic.png" width="250" />
