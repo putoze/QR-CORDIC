@@ -1,7 +1,7 @@
 # **QR_CORDIC**
 - [Introduction](#Introduction)
 - [QR Decomposition & QR Cordic Algorithm](#qr-decomposition--qr-cordic-algorithm)
-- [QR Cordic Hardware Design]()
+- [QR Cordic Hardware Design](#qr-cordic-hardware-design)
 - [QR Cordic cell-base design](#Test)
 - [Yolo Top works on FPGA](#Yolo-Top)
 - [Simulation outcome](#OUTCOME)
@@ -79,7 +79,7 @@ output_matrix = 13 bits(1 sign bit, 2 decimal bits, 10 fraction bits)
   <img src="img/qr_dg.png" width="600" />
 </p>
 
-選擇 $\vec{d}$ = $\begin{bmatrix} 1 \\ 0 \\ 0\end{bmatrix}$ , 結果如圖
+選擇 $\vec{d} = \begin{bmatrix} 1 \\ 0 \\ 0\end{bmatrix} $ , 結果如圖
 
 <p align="left">
   <img src="img/qr_systolic.png" width="250" />
@@ -97,9 +97,8 @@ detecting_delay_element會在PE執行完八次micro-rotation(4 cycles)後執行*
 
 ### 5. Schedule
 
-由於R22與R12間有資料相依，中間需要加delay，delay數由疊代次數(n)與J(unfolding factor)有關，算式如下：
-Delay >= (n/J+1)*2   
-；n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法器，乘2為有兩級資料相依。
+由於R22與R12間有資料相依，中間需要加delay，delay數由疊代次數(n)與J(unfolding factor)有關，算式如下：<br>
+Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法器，乘2為有兩級資料相依。 <br>
 舉例：以 $X_{72}$ 、 $X_{82}$為例，R22執行需等到R12執行完 $X_{72}$、 $X_{82}$ 才能計算。
 同理(R13,R23)、(R14,R24)、(R34,R44)。
 (R23,R33)、(R24,R34)多delay兩級目的為使用pipeline技巧，讓原先需要八顆乘法器降成4顆乘法器。最後結果如下
