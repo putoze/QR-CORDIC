@@ -63,6 +63,8 @@ QR 分解是數值線性代數中具備多種用途的計算工具，主要應�
 iter_num = 8
 input_matrix = 13 bits(1 sign bit, 2 decimal bits, 10 fraction bits)
 output_matrix = 13 bits(1 sign bit, 2 decimal bits, 10 fraction bits)
+K=0.6074, total 11 bits(sign bit 1, fraction bit 10)
+(derive from An, n = 8代入)
 ```
 
 ## QR Cordic Hardware Design
@@ -163,5 +165,43 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
 
 ![area](https://user-images.githubusercontent.com/97605863/202999610-06c480d1-27ba-4b91-b5e2-dd8fd6f65399.png)
 
+## Appendix
+
+### waveform
+
+1. in_valid
+
+<p align="left">
+  <img src="img/in_valid_wave.png" />
+</p>
+
+2. center_control_wave
+
+<p align="left">
+  <img src="img/center_control_wave.png" />
+</p>
+
+3. out_wave
+
+<p align="left">
+  <img src="img/out_wave.png" />
+</p>
+
+### vivado
+
+<p align="left">
+  <img src="img/vivado_result.png" />
+</p>
+
+<p align="left">
+  <img src="img/vivado_result2.png" />
+</p>
 
 
+## Reference
+
+```
+[1] D. Boppana, K. Dhanoa and J. Kempa, "FPGA based embedded processing architecture for the QRD-RLS algorithm,"12th Annual IEEE Symposium on Field-Programmable Custom Computing Machines, 2004, pp. 330-331, doi: 10.1109/FCCM.2004.34
+
+[2]	ANDRAKA, Ray. A survey of CORDIC algorithms for FPGA based computers. In: Proceedings of the 1998 ACM/SIGDA sixth international symposium on Field programmable gate arrays. 1998. p. 191-200
+```
