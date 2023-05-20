@@ -111,6 +111,10 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
   <img src="img/qr_systolic_schedule.png" width="300" />
 </p>
 
+<p align="left">
+  <img src="img/8_4_qr_timing.png" width="800" />
+</p>
+
 ## Test
 
 - 系統架構圖
