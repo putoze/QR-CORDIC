@@ -103,9 +103,8 @@ detecting_delay_element會在PE執行完八次micro-rotation(4 cycles)後執行*
 
 由於R22與R12間有資料相依，中間需要加delay，delay數由疊代次數(n)與J(unfolding factor)有關，算式如下：<br>
 Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法器，乘2為有兩級資料相依。 <br>
-舉例：以 $X_{72}$ 、 $X_{82}$為例，R22執行需等到R12執行完 $X_{72}$、 $X_{82}$ 才能計算。
-同理(R13,R23)、(R14,R24)、(R34,R44)。
-(R23,R33)、(R24,R34)多delay兩級目的為使用pipeline技巧，讓原先需要八顆乘法器降成4顆乘法器。最後結果如下
+舉例：以 $X_{72}$ 、 $X_{82}$為例，R22執行需等到R12執行完 $X_{72}$、 $X_{82}$ 才能計算。同理(R13,R23)、(R14,R24)、(R34,R44)。<br>
+(R23,R33)多delay兩級目的為使用pipeline技巧，讓原先需要八顆乘法器降成4顆乘法器。最後結果如下
 
 <p align="left">
   <img src="img/qr_systolic_schedule.png" width="300" />
@@ -114,6 +113,8 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
 <p align="left">
   <img src="img/8_4_qr_timing.png" width="800" />
 </p>
+
+以 $X_{71}$ 、 $X_{72}$ 均進入GG1開始算第一個cycle
 
 ## Test
 
@@ -207,5 +208,5 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
 ```
 [1] D. Boppana, K. Dhanoa and J. Kempa, "FPGA based embedded processing architecture for the QRD-RLS algorithm,"12th Annual IEEE Symposium on Field-Programmable Custom Computing Machines, 2004, pp. 330-331, doi: 10.1109/FCCM.2004.34
 
-[2]	ANDRAKA, Ray. A survey of CORDIC algorithms for FPGA based computers. In: Proceedings of the 1998 ACM/SIGDA sixth international symposium on Field programmable gate arrays. 1998. p. 191-200
+[2] ANDRAKA, Ray. A survey of CORDIC algorithms for FPGA based computers. In: Proceedings of the 1998 ACM/SIGDA sixth international symposium on Field programmable gate arrays. 1998. p. 191-200
 ```
