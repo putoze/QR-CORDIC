@@ -114,7 +114,7 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
   <img src="img/8_4_qr_timing.png" width="800" />
 </p>
 
-以 $X_{71}$ 、 $X_{72}$ 均進入GG1開始算第一個cycle
+以 $X_{71}$ 、 $X_{72}$ 均進入GG1開始算第一個cycle，K=1、K=4共用乘法器；K=2、K=3共用乘法器，所以一共四顆乘法器。(GG與GR的最後一個clk做乘法)
 
 ## Test
 
