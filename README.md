@@ -202,6 +202,9 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
   <img src="img/vivado_result2.png" />
 </p>
 
+<p align="left">
+  <img src="img/utilization.png" />
+</p>
 
 ## Reference
 
