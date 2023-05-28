@@ -170,6 +170,32 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
 
 ![area](https://user-images.githubusercontent.com/97605863/202999610-06c480d1-27ba-4b91-b5e2-dd8fd6f65399.png)
 
+- ILA
+
+### input index 0 ~ 3
+
+<p align="left">
+  <img src="img/ILA_in_0_3.png" />
+</p>
+
+### input index 4 ~ 7 
+
+<p align="left">
+  <img src="img/ILA_in_4_7.png" />
+</p>
+
+### out index 0 ~ 3 
+
+<p align="left">
+  <img src="img/ILA_out_0_3.png" />
+</p>
+
+### out index 4 ~ 7
+
+<p align="left">
+  <img src="img/ILA_out_4_7.png" />
+</p>
+
 ## Appendix
 
 ### waveform
