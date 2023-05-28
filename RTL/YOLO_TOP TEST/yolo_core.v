@@ -71,7 +71,7 @@ wire wb_done    = counter == 'd0 && curr_state == WB  ;
 assign isif_read     = READ_state;
 assign osif_data_din = WB_state ? {{EXTEND{1'b0}},data_temp} : 'd0;
 assign osif_strb_din = {TBYTE{1'b1}};
-assign osif_last_din = read_done;
+assign osif_last_din = wb_done;
 assign osif_user_din = 0;
 assign osif_write    = WB_state;
 

@@ -196,6 +196,12 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
   <img src="img/ILA_out_4_7.png" />
 </p>
 
+### sdk result
+
+<p align="left">
+  <img src="img/sdk_result.png" />
+</p>
+
 ## Appendix
 
 ### waveform
@@ -221,11 +227,11 @@ Delay >= (n/J+1)*2, n/J為 $X_{ij}$ 執行Rotation mode的次數，加1為乘法
 ### vivado
 
 <p align="left">
-  <img src="img/vivado_result.png" />
+  <img src="img/timing.png" />
 </p>
 
 <p align="left">
-  <img src="img/vivado_result2.png" />
+  <img src="img/power.png" />
 </p>
 
 <p align="left">
