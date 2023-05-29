@@ -65,4 +65,7 @@ int main()
 
     print("cordic_IP0 Initial\n");
     cordic_IP0(1);
+
+    print("WRITE_DATA0 Initial\n");
+    WRITE_DATA0();
 }

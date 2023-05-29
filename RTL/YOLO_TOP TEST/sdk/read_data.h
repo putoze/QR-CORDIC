@@ -13,5 +13,6 @@ u64 *ofmap;
 u64 data_out[OFMAP_SIZE];
 
 int READ_DATA0();
+int WRITE_DATA0();
 
 #endif /* SRC_READ_DATA_H_ */
