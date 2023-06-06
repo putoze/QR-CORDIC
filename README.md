@@ -91,7 +91,7 @@ K=0.6074, total 11 bits(sign bit 1, fraction bit 10)
 
 ### 4. Choose PE
 
-原先的設計在一個clk做一次micro-rotate，但很顯然，這樣的設計執行效率過慢，因此改良後如下圖，每個cycle做2次micro-rotate(unfolding factor=2)，將提高computing latency從p+1 clock in one Given rotation變成p/2+1 clock，p為iter_num，且不改變原先的critical path(critical path仍為乘法器)
+原先的設計在一個clk做一次micro-rotate，但很顯然，這樣的設計執行效率過慢，因此改良後如下圖，每個cycle做2次micro-rotate，將提高computing latency從p+1 clock in one Given rotation變成p/2+1 clock，p為iter_num，且不改變原先的critical path(critical path仍為乘法器)
 
 <p align="left">
   <img src="img/PE.png" width="500" />
