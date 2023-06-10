@@ -14,8 +14,8 @@
 #include "axi_dma.h"
 #include "sleep.h"
 
-#include "read_data.h"
 #include "xtime_l.h"
+#include "rw_data.h"
 
 void TX_DATA(int size, u64 *fmap)
 {

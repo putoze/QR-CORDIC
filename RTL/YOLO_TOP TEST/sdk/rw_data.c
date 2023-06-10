@@ -3,8 +3,8 @@
 #include "xparameters.h"
 #include "xil_exception.h"
 #include "xdebug.h"
-#include "read_data.h"
 #include "math.h"
+#include "rw_data.h"
 
 static FIL fil_file;
 static FATFS fatfs;
@@ -13,7 +13,7 @@ static FATFS fatfs;
 // const static char file_input[32] = "dect_img1.dat";
 // const static char file_input[32] = "dect_img1_2.dat";
 const static char file_input[32] = "matrix_ori.dat";
-const static char file_out[32] = "matrix_exp.dat";
+const static char file_out[32] = "matrix_exp_test.dat";
 // const static char file_input[32] = "dect_img3.dat";
 // const static char file_input[32] = "dect_img3_2.dat";
 // const static char file_input[32] = "dect_img4.dat";
@@ -144,7 +144,7 @@ int WRITE_DATA0()
     xil_printf("SD Card writing...\n");
 
     FRESULT Res;
-    UINT NumBytesRead;
+    UINT NumBytesWrite;
     // indicates the root directory of the SD card
     TCHAR *Path = "0:/";
 
@@ -167,7 +167,7 @@ int WRITE_DATA0()
 int WRITE_u64(int size, char **file_name, u64 *out)
 {
     FRESULT Res;
-    UINT NumBytesRead;
+    UINT NumBytesWrite;
 
     Res = f_open(&fil_file, file_name, FA_WRITE);
     if (Res)
@@ -184,16 +184,13 @@ int WRITE_u64(int size, char **file_name, u64 *out)
         return XST_FAILURE;
     }
 
-    // Read data from file.
-    for (int i = 0; i < size; i++)
+    // write 8*OFMAP byte number of data to sd card
+    Res = f_write(&fil_file, (void *)out, 8 * size, &NumBytesWrite);
+
+    if (Res)
     {
-        // 16 character each time(because dat file save in hex form)
-        Res = f_write(&fil_file, (void *)out, 64, &NumBytesRead);
-        if (Res)
-        {
-            xil_printf("-- Failed at stage 4 --\r\n");
-            return XST_FAILURE;
-        }
+        xil_printf("-- Failed at stage 4 --\r\n");
+        return XST_FAILURE;
     }
 
     // Close file.
