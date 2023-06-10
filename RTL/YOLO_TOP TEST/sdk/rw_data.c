@@ -12,8 +12,8 @@ static FATFS fatfs;
 // file names
 // const static char file_input[32] = "dect_img1.dat";
 // const static char file_input[32] = "dect_img1_2.dat";
-const static char file_input[32] = "matrix_ori.dat";
-const static char file_out[32] = "matrix_exp_test.dat";
+const static char file_input[32] = "matrix_ori_sd.dat";
+const static char file_out[32] = "matrix_exp_sd.dat";
 // const static char file_input[32] = "dect_img3.dat";
 // const static char file_input[32] = "dect_img3_2.dat";
 // const static char file_input[32] = "dect_img4.dat";
