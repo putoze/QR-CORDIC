@@ -12,6 +12,8 @@
 //
 // ============================================================================
 
+`timescale 1 ns / 1 ps
+
 module yolo_core #(
         parameter TBITS = 32 ,
         parameter TBYTE = 4
@@ -37,25 +39,24 @@ module yolo_core #(
         input  wire             rst ,
         input  wire             clk
 );  
-
-//==========  parameter ========== //
-parameter DATA_LENGTH = 13;
-//state
-localparam IDLE = 2'b00;
-localparam READ = 2'b01;
-localparam CAL  = 2'b10;
-localparam WB   = 2'b11;
-//state num
-parameter STATE_NUM = 2;
-parameter NUM_COL = 8;
-parameter EXTEND = TBITS-DATA_LENGTH;
-
 //state
 reg [STATE_NUM-1:0] curr_state, next_state;
 //counter
 reg [2:0] counter;
 //data_delay_buffer
 reg [DATA_LENGTH*4-1:0] data_temp;
+
+//==========  parameter ========== //
+localparam DATA_LENGTH = 13;
+//state
+localparam IDLE = 2'b00;
+localparam READ = 2'b01;
+localparam CAL  = 2'b10;
+localparam WB   = 2'b11;
+//state num
+localparam STATE_NUM = 2;
+localparam NUM_COL = 8;
+localparam EXTEND = TBITS-DATA_LENGTH;
 
 //state wire
 wire READ_state = curr_state == READ;
@@ -69,7 +70,7 @@ wire wb_done    = counter == 'd0 && curr_state == WB  ;
 assign isif_read     = READ_state;
 assign osif_data_din = WB_state ? {{EXTEND{1'b0}},data_temp} : 'd0;
 assign osif_strb_din = {TBYTE{1'b1}};
-assign osif_last_din = wb_done;
+assign osif_last_din = read_done;
 assign osif_user_din = 0;
 assign osif_write    = WB_state;
 
@@ -121,9 +122,7 @@ always @(posedge clk or posedge rst) begin
 end
 
 //==========  Module  ========== //
-        QR_CORDIC     #(
-       .DATA_LENGTH(DATA_LENGTH)
-  )
+        QR_CORDIC 
         inst_QR_CORDIC(
                 .clk        (clk),
                 .rst        (rst),

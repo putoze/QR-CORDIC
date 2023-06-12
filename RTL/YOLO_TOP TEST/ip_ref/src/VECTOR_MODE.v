@@ -1,8 +1,8 @@
 module VECTOR_MODE
    #(
-      parameter DATA_LENGTH = 13,
-      parameter ITER_IDX    = 3 ,
-      parameter NUM_SIGN    = 2
+      DATA_LENGTH = 13,
+      ITER_IDX    = 3 ,
+      NUM_SIGN    = 2
       )
    (in_X,in_Y,iter_num,sign_d,out_X,out_Y);
 

@@ -6,13 +6,7 @@
 // Func     : AXIS I/O Stream interface for rate adaption
 // ============================================================================
 
-`include "yolo_rst_if.v"
-`include "yolo_core.v"
-`include "OUTPUT_STREAM_if.v"
-`include "INPUT_STREAM_if.v"
-`include "QR_CORDIC.v"
-`include "ROTATION_MODE.v"
-`include "VECTOR_MODE.v"
+`timescale 1 ns / 1 ps
 
 module yolo_top
 #(
@@ -31,7 +25,6 @@ module yolo_top
         output wire [TBYTE-1:0] M_AXIS_S2MM_TKEEP,
         output wire [1-1:0]     M_AXIS_S2MM_TLAST,  // EOL      
         
-/*
         output wire [TBITS-1:0] isif_data_dout,
         output wire [TBYTE-1:0] isif_strb_dout,
         output wire [1 - 1:0]   isif_last_dout,
@@ -44,8 +37,7 @@ module yolo_top
         output wire [1 - 1:0]   osif_last_din,
         output wire [1 - 1:0]   osif_user_din,
         output wire             osif_full_n,
-        output wire             osif_write,  
-*/              
+        output wire             osif_write,                
         
         input  wire             S_AXIS_MM2S_ACLK,
         input  wire             M_AXIS_S2MM_ACLK,
@@ -53,8 +45,9 @@ module yolo_top
         input  wire             aresetn
 );
 
-localparam RESET_ACTIVE_LOW = 1;
+parameter RESET_ACTIVE_LOW = 1;
 
+/*
 wire [TBITS - 1:0] isif_data_dout;
 wire [TBYTE - 1:0] isif_strb_dout;
 wire [1 - 1:0]     isif_last_dout;
@@ -68,6 +61,7 @@ wire               osif_full_n;
 wire               osif_write;
 wire [1 - 1:0]     osif_last_din;
 wire [1 - 1:0]     osif_user_din;
+*/
 
 wire ap_rst;
 
@@ -142,7 +136,7 @@ OUTPUT_STREAM_if_U (
         .TDATA ( M_AXIS_S2MM_TDATA ) ,
         .TKEEP ( M_AXIS_S2MM_TKEEP ) ,
         .TLAST ( M_AXIS_S2MM_TLAST ) ,      
-        .TUSER ( ) ,
+        .TUSER (  ) ,
 
         .osif_data_din ( osif_data_din ) ,
         .osif_strb_din ( osif_strb_din ) ,
